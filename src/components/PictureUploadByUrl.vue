@@ -1,0 +1,69 @@
+<template>
+  <div id="avatar-uploader-url">
+    <a-form layout="inline">
+      <a-form-item class="inputUrl">
+        <a-input v-model:value="imgUrl"></a-input>
+      </a-form-item>
+      <a-form-item>
+        <a-button type="primary" @click="handleChange" :loading="loading">上传</a-button>
+      </a-form-item>
+    </a-form>
+    <a-image style="margin: 10px 0; width: 300px" v-if="picture?.url" :src="picture?.url"></a-image>
+  </div>
+</template>
+<script lang="ts" setup>
+import { ref } from 'vue'
+import { message } from 'ant-design-vue'
+import { uploadPictureByUrlUsingPost } from '@/api/pictureController.ts'
+
+interface Props {
+  picture?: API.PictureVO
+  onSuccess?: (picture: API.PictureVO) => void
+}
+
+const props = defineProps<Props>()
+const loading = ref<boolean>(false) //加载状态
+let imgUrl = ref('') //地址上传
+
+async function handleChange() {
+  loading.value = true
+  try {
+    let params = props.picture
+      ? { id: props.picture.id, fileUrl: imgUrl.value }
+      : { fileUrl: imgUrl.value }
+    const res = await uploadPictureByUrlUsingPost(params)
+    if (res.data.code === 200) {
+      message.success('上传成功')
+      props.onSuccess?.(res.data.data)
+    } else {
+      message.error('图片上传失败' + res.data.message)
+    }
+  } catch (e) {
+    message.error('图片上传失败' + e.message)
+  }
+  loading.value = false
+}
+</script>
+<style scoped>
+#avatar-uploader-url {
+  text-align: center;
+
+  .inputUrl {
+    width: 350px;
+  }
+
+  :deep(.ant-form-inline) {
+    display: flex;
+  }
+
+
+}
+
+@media screen and (max-width: 500px) {
+  #avatar-uploader-url {
+    .inputUrl {
+      width: 183px;
+    }
+  }
+}
+</style>
