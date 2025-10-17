@@ -1,6 +1,6 @@
 <template>
   <div id="spacePage">
-    <h2>hahah</h2><h3>hello</h3>
+    <h2>nihao</h2>
     <h2 class="title">
       {{ space?.spaceName }}{{ space?.spaceType == 0 ? '（个人空间）' : '（团队' + '空间）' }}
       <a-tooltip>
