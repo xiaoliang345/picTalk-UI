@@ -50,7 +50,7 @@ export async function editSpaceUsingPost(
 /** getSpaceById GET /api/space/get */
 export async function getSpaceByIdUsingGet(
   // 叠加生成的Param类型 (非body参数swagger默认没有生成对象)
-  params: API.getSpaceByIdUsingGETParams,
+  params: API.getSpaceByIdUsingGetParams,
   options?: { [key: string]: any },
 ) {
   return request<API.BaseResponseSpace_>('/api/space/get', {
@@ -65,7 +65,7 @@ export async function getSpaceByIdUsingGet(
 /** getSpaceVOById GET /api/space/get/vo */
 export async function getSpaceVoByIdUsingGet(
   // 叠加生成的Param类型 (非body参数swagger默认没有生成对象)
-  params: API.getSpaceVOByIdUsingGETParams,
+  params: API.getSpaceVOByIdUsingGetParams,
   options?: { [key: string]: any },
 ) {
   return request<API.BaseResponseSpaceVO_>('/api/space/get/vo', {

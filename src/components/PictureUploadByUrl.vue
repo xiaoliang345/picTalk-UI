@@ -1,6 +1,6 @@
 <template>
   <div id="avatar-uploader-url">
-    <a-form layout="inline">
+    <a-form layout="inline" style="display: flex;justify-content: center">
       <a-form-item class="inputUrl">
         <a-input v-model:value="imgUrl"></a-input>
       </a-form-item>
@@ -8,7 +8,9 @@
         <a-button type="primary" @click="handleChange" :loading="loading">上传</a-button>
       </a-form-item>
     </a-form>
-    <a-image style="margin: 10px 0; width: 300px" v-if="picture?.url" :src="picture?.url"></a-image>
+    <div style="margin: 20px 0 0;">
+      <a-image style=" width: 300px" v-if="picture?.url" :src="picture?.url"></a-image>
+    </div>
   </div>
 </template>
 <script lang="ts" setup>

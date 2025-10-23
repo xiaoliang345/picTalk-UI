@@ -9,7 +9,6 @@
         <div class="ant-upload-text">点击拖拽或上传图片</div>
       </div>
     </a-upload>
-    <a-progress v-if="progress > 0" :percent="progress" />
   </div>
 </template>
 <script lang="ts" setup>
@@ -27,41 +26,22 @@ interface Props {
 
 const props = defineProps<Props>()
 const loading = ref<boolean>(false) //加载状态
-const progress = ref<number>(0) //进度
-const duration = ref<number>(0) //预计上传时间
 
 async function handleChange({ file }: any) {
   loading.value = true
-  let interval = setInterval(() => {
-    if (progress.value < 90) {
-      progress.value += 10;
-    }
-  }, duration.value / 10)
-  //超时后自动清除
-  setTimeout(() => {
-    clearInterval(interval);
-    progress.value = 0;
-    loading.value = false
-  }, 8000)
+
   try {
     let params = props.picture ? { id: props.picture.id } : {}
     if (props.spaceId) params['spaceId'] = props.spaceId
     const res = await uploadPictureUsingPost(params, {}, file)
     if (res.data.code === 200) {
       message.success('上传成功')
-      progress.value = 100;
       props.onSuccess?.(res.data.data)
     } else {
       message.error('图片上传失败' + res.data.message)
     }
-    clearInterval(interval);
   } catch (e) {
     message.error('图片上传失败' + e.message)
-  } finally {
-    setTimeout(() => {
-      progress.value = 0;
-      loading.value = false
-    }, 500)
   }
 }
 
@@ -73,8 +53,6 @@ const beforeUpload = (file: UploadProps['fileList'][number]) => {
     message.error('You can only upload JPG | PNG | GIF file!')
   }
   const isLt2M = file.size / 1024 / 1024 < 2
-  duration.value = parseInt(String(file.size / 1024 / 1024 * 3000))
-  console.log(duration.value);
   if (!isLt2M) {
     message.error('Image must smaller than 2MB!')
   }

@@ -113,6 +113,8 @@ async function handleDelete(id: number) {
     overflow: hidden;
   }
 
+
+
   .btns {
     display: flex;
     padding-left: 0;

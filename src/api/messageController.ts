@@ -25,7 +25,7 @@ export async function addMessageUsingPost(body: API.Message, options?: { [key: s
 /** deleteMessage DELETE /api/messages/${param0} */
 export async function deleteMessageUsingDelete(
   // 叠加生成的Param类型 (非body参数swagger默认没有生成对象)
-  params: API.deleteMessageUsingDELETEParams,
+  params: API.deleteMessageUsingDeleteParams,
   options?: { [key: string]: any },
 ) {
   const { id: param0, ...queryParams } = params

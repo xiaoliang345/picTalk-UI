@@ -204,6 +204,7 @@ onMounted(async () => {
     height: auto;
     aspect-ratio: 1 / 1;
     overflow: hidden;
+    border-radius: 8px 8px 0 0;
   }
 
   :deep(.ant-image-img) {

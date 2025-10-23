@@ -17,21 +17,6 @@ export async function deletePictureUsingPost(
   })
 }
 
-/** deletePictureByBatch POST /api/picture/delete/batch */
-export async function deletePictureByBatchUsingPost(
-  body: API.DeleteRequestByBatch,
-  options?: { [key: string]: any },
-) {
-  return request<API.BaseResponseBoolean_>('/api/picture/delete/batch', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    data: body,
-    ...(options || {}),
-  })
-}
-
 /** editPicture POST /api/picture/edit */
 export async function editPictureUsingPost(
   body: API.PictureEditRequest,
@@ -65,7 +50,7 @@ export async function editPictureByBatchUsingPost(
 /** getPictureById GET /api/picture/get */
 export async function getPictureByIdUsingGet(
   // 叠加生成的Param类型 (非body参数swagger默认没有生成对象)
-  params: API.getPictureByIdUsingGETParams,
+  params: API.getPictureByIdUsingGetParams,
   options?: { [key: string]: any },
 ) {
   return request<API.BaseResponsePicture_>('/api/picture/get', {
@@ -80,7 +65,7 @@ export async function getPictureByIdUsingGet(
 /** getPictureVOById GET /api/picture/get/vo */
 export async function getPictureVoByIdUsingGet(
   // 叠加生成的Param类型 (非body参数swagger默认没有生成对象)
-  params: API.getPictureVOByIdUsingGETParams,
+  params: API.getPictureVOByIdUsingGetParams,
   options?: { [key: string]: any },
 ) {
   return request<API.BaseResponsePictureVO_>('/api/picture/get/vo', {
@@ -158,7 +143,7 @@ export async function createPictureOutPaintingTaskUsingPost(
 /** getPictureOutPaintingTask GET /api/picture/out_painting/get_task */
 export async function getPictureOutPaintingTaskUsingGet(
   // 叠加生成的Param类型 (非body参数swagger默认没有生成对象)
-  params: API.getPictureOutPaintingTaskUsingGETParams,
+  params: API.getPictureOutPaintingTaskUsingGetParams,
   options?: { [key: string]: any },
 ) {
   return request<API.BaseResponseGetOutPaintingTaskResponse_>(
@@ -244,7 +229,7 @@ export async function updatePictureUsingPost(
 /** uploadPicture POST /api/picture/upload */
 export async function uploadPictureUsingPost(
   // 叠加生成的Param类型 (非body参数swagger默认没有生成对象)
-  params: API.uploadPictureUsingPOSTParams,
+  params: API.uploadPictureUsingPostParams,
   body: {},
   file?: File,
   options?: { [key: string]: any },

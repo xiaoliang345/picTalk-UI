@@ -31,24 +31,19 @@
       </a-space>
     </div>
     <a-table class="custom-table" :columns="columns" :data-source="data" :pagination="false"
-      :scroll="{ x: 'max-content', y: 500 }" :row-key="(record: API.Picture) => record.id"
-      :row-selection="{ selectedRowKeys: state.selectedRowKeys, onChange: onSelectChange }">
+      :scroll="{ x: 'max-content' }" :row-key="(record: API.Picture) => record.id"
+      :row-selection="{ selectedRowKeys: state.selectedRowKeys, onChange: onSelectChange, columnWidth: '60px' }">
       <template #bodyCell="{ column, record, index }">
-        <template v-if="column.dataIndex === 'serialNumber'">
-          {{ index + 1 }}
-        </template>
         <template v-if="column.dataIndex === 'url'">
-          <a-image :width="50" :src="record.thumbnailUrl" />
+          <a-image :width="80" :src="record.thumbnailUrl" />
         </template>
         <template v-else-if="column.dataIndex === 'user'">
           {{ record.userId }}
         </template>
         <template v-else-if="column.dataIndex === 'pictureInfo'">
-          格式：{{ record.picFormat }}<br />
-          高度：{{ record.picHeight }}<br />
-          宽度：{{ record.picWidth }}<br />
-          宽高比：{{ record.picScale }}<br />
-          大小：{{ (record.picSize / 1024).toFixed(2) + 'KB' }}
+          格式：{{ record.picFormat }} 高度：{{ record.picHeight }}<br />
+          宽度：{{ record.picWidth }} 宽高比：{{ record.picScale }}<br />
+          大小：{{ (record.picSize / 1024 / 1024).toFixed(2) + 'MB' }}
         </template>
         <template v-else-if="column.dataIndex === 'tags'">
           <a-tag v-for="(tag, index) in record.tags" :key="index">
@@ -56,10 +51,14 @@
           </a-tag>
         </template>
         <template v-else-if="column.dataIndex === 'reviewInfo'">
-          <div>审核状态：{{ PIC_REVIEW_STATUS_MAP[record.reviewStatus] }}</div>
-          <div>审核信息：{{ record.reviewMessage }}</div>
-          <div>审核人：{{ record.userId }}</div>
-          <div>审核时间：{{ dayjs(record.reviewTime).format('YYYY-MM-DD HH:mm:ss') }}</div>
+          <a-tooltip>
+            <template #title>
+              <div>审核信息：{{ record.reviewMessage }}</div>
+              <div>审核人：{{ record.userId }}</div>
+              <div>审核时间：{{ dayjs(record.reviewTime).format('YYYY-MM-DD HH:mm:ss') }}</div>
+            </template>
+            <div>审核状态：{{ PIC_REVIEW_STATUS_MAP[record.reviewStatus] }}</div>
+          </a-tooltip>
         </template>
         <template v-else-if="column.key === 'action'">
           <template v-if="!record.spaceId">
@@ -106,7 +105,7 @@ import { onMounted, reactive, ref, computed } from 'vue'
 import dayjs from 'dayjs'
 import { message } from 'ant-design-vue'
 import {
-  deletePictureByBatchUsingPost,
+  // deletePictureByBatchUsingPost,
   deletePictureUsingPost,
   doPictureReviewUsingPost,
   listPictureByPageUsingPost,
@@ -121,25 +120,28 @@ import type { Key } from 'ant-design-vue/es/_util/type'
 const publicStore = usePublicStore();
 const columns = [
   {
-    title: '序号',
-    dataIndex: 'serialNumber',
+    title: 'id',
+    dataIndex: 'id',
     align: 'center',
   },
   {
     title: '图片',
     dataIndex: 'url',
     align: 'center',
+    width: 100
   },
   {
     title: '名称',
     dataIndex: 'name',
     align: 'center',
+    width: 150
   },
 
   {
     title: '简介',
     dataIndex: 'introduction',
     align: 'center',
+    width: 150
   },
   {
     title: '类型',
@@ -150,11 +152,12 @@ const columns = [
     title: '标签',
     dataIndex: 'tags',
     align: 'center',
+    width: 150
   },
   {
     title: '图片信息',
     dataIndex: 'pictureInfo',
-    width: 150,
+    align: 'center',
   },
   {
     title: '用户id',
@@ -163,27 +166,22 @@ const columns = [
     width: 100,
   },
   {
-    title: '用户昵称',
-    dataIndex: 'user',
-    align: 'center',
-    minWidth: 100,
-  },
-  {
     title: '审核信息',
     dataIndex: 'reviewInfo',
     width: 150,
+    align: 'center',
   },
   {
     title: '创建时间',
     dataIndex: 'createTime',
     align: 'center',
-    minWidth: 200,
+    minWidth: 160,
   },
   {
     title: '操作',
     key: 'action',
     align: 'center',
-    width: 200,
+    width: 120,
     fixed: 'right',
   },
 ]
@@ -345,6 +343,7 @@ onMounted(() => {
   getData()
 })
 </script>
+
 <style scoped lang="less">
 .pictureManagePage {
   padding-bottom: 30px;
@@ -362,6 +361,8 @@ onMounted(() => {
     margin-top: 10px;
     right: 30px;
   }
+
+
 }
 
 @media screen and (max-width: 500px) {

@@ -191,7 +191,7 @@ declare namespace API {
     pictureId?: number
   }
 
-  type deleteMessageUsingDELETEParams = {
+  type deleteMessageUsingDeleteParams = {
     /** id */
     id: number
   }
@@ -200,46 +200,42 @@ declare namespace API {
     id?: number
   }
 
-  type DeleteRequestByBatch = {
-    ids?: number[]
-  }
-
   type GetOutPaintingTaskResponse = {
     output?: Output1
     requestId?: string
   }
 
-  type getPictureByIdUsingGETParams = {
+  type getPictureByIdUsingGetParams = {
     /** id */
     id?: number
   }
 
-  type getPictureOutPaintingTaskUsingGETParams = {
+  type getPictureOutPaintingTaskUsingGetParams = {
     /** taskId */
     taskId?: string
   }
 
-  type getPictureVOByIdUsingGETParams = {
+  type getPictureVOByIdUsingGetParams = {
     /** id */
     id?: number
   }
 
-  type getSpaceByIdUsingGETParams = {
+  type getSpaceByIdUsingGetParams = {
     /** id */
     id?: number
   }
 
-  type getSpaceVOByIdUsingGETParams = {
+  type getSpaceVOByIdUsingGetParams = {
     /** id */
     id?: number
   }
 
-  type getUserByIdUsingGETParams = {
+  type getUserByIdUsingGetParams = {
     /** id */
     id?: number
   }
 
-  type getUserVOByIdUsingGETParams = {
+  type getUserVOByIdUsingGetParams = {
     /** id */
     id?: number
   }
@@ -654,12 +650,12 @@ declare namespace API {
     total?: number
   }
 
-  type testDownloadFileUsingGETParams = {
+  type testDownloadFileUsingGetParams = {
     /** filepath */
     filepath?: string
   }
 
-  type uploadPictureUsingPOSTParams = {
+  type uploadPictureUsingPostParams = {
     fileUrl?: string
     id?: number
     picName?: string

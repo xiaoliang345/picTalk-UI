@@ -9,6 +9,7 @@ import VueCropper from 'vue-cropper'
 import 'vue-cropper/dist/index.css'
 import './styles/variables.less'
 import '@/assets/css/variables.less'
+import './styles/common.less'
 
 const app = createApp(App)
 

@@ -1,8 +1,5 @@
 <template>
   <a-layout id="message-board">
-    <a-layout-header style="background: #fff; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15)">
-      <h1 style="line-height: 50px;margin: 0;">留言板系统（如需添加空间容量，请联系管理员3457674636@qq.com）</h1>
-    </a-layout-header>
     <a-layout-content>
       <div class="message-board">
         <a-card title="留言板" :bordered="false" style="width: 100%; max-width: 800px; margin: 0 auto">

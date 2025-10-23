@@ -1,15 +1,15 @@
 <template>
   <div id="globalHeader">
     <a-row :wrap="false">
-      <a-col flex="140px">
+      <a-col :flex="publicStore.isFold ? '100px' : '140px'">
         <router-link to="/">
           <div class="title-bar">
-            <img src="@/assets/logo.png" alt="logo" />
+            <img v-if="!publicStore.isFold" src="@/assets/logo.png" alt="logo" />
             <div class="title">图语空间</div>
           </div>
         </router-link>
       </a-col>
-      <a-col flex="auto">
+      <a-col flex="auto" :style="{ marginLeft: publicStore.isFold ? '0px' : '40px' }">
         <a-menu v-model:selectedKeys="current" @click="doMenuClick" mode="horizontal" :items="items" />
       </a-col>
       <a-col>
