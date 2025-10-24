@@ -19,6 +19,7 @@ export const usePublicStore = defineStore('public', () => {
       categoryOptions.value = (res.data.data?.categoryList ?? []).map((item) => {
         return { label: item, value: item }
       })
+      console.log(tagOptions.value, categoryOptions.value)
     }
   }
 

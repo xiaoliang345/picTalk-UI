@@ -1,6 +1,6 @@
 <template>
   <div id="avatar-uploader">
-    <a-upload list-type="picture-card" :show-upload-list="false" :before-upload="beforeUpload"
+    <a-upload :disabled="loading"  list-type="picture-card" :show-upload-list="false" :before-upload="beforeUpload"
       :custom-request="handleChange">
       <img v-if="picture?.url" :src="picture?.url" alt="avatar" />
       <div v-else>
@@ -24,11 +24,12 @@ interface Props {
   onSuccess?: (picture: API.PictureVO) => void
 }
 
+const loading =defineModel('loading')
+
 const props = defineProps<Props>()
-const loading = ref<boolean>(false) //加载状态
 
 async function handleChange({ file }: any) {
-  loading.value = true
+  loading.value=true
 
   try {
     let params = props.picture ? { id: props.picture.id } : {}
@@ -37,6 +38,7 @@ async function handleChange({ file }: any) {
     if (res.data.code === 200) {
       message.success('上传成功')
       props.onSuccess?.(res.data.data)
+      loading.value = false
     } else {
       message.error('图片上传失败' + res.data.message)
     }

@@ -5,7 +5,7 @@
     </h3>
     <a-tabs v-model:activeKey="addType" class="add-picture-tabs">
       <a-tab-pane key="file" tab="文件上传">
-        <PictureUpload :spaceId="route.query.spaceId" :picture="picture" :onSuccess="onSuccess" />
+        <PictureUpload v-model:loading="loading"  :spaceId="route.query.spaceId" :picture="picture" :onSuccess="onSuccess" />
       </a-tab-pane>
       <a-tab-pane key="url" tab="地址上传">
         <PictureUploadByUrl :picture="picture" :onSuccess="onSuccess" />
@@ -34,7 +34,7 @@
         <a-select mode="tags" v-model:value="pictureForm.tags" :options="tagOptions" placeholder="输入图片标签" />
       </a-form-item>
       <a-form-item>
-        <a-button @click="handleAdd" type="primary">{{ route.query.id ? '修改' : '创建' }}
+        <a-button :loading="loading" @click="handleAdd" type="primary">{{ route.query.id ? '修改' : '创建' }}
         </a-button>
       </a-form-item>
     </a-form>
@@ -72,6 +72,7 @@ let categoryOptions = ref(publicStore.categoryOptions) //分类选项
 let addType = ref('file')
 let showAddPictures = ref(true) //是否展示批量上传
 let cropperIsShow = ref(false) //控制croper是否显示
+let loading = ref(false) //加载状态
 //是否显示编辑图片按钮
 let editPictureBtn = computed(() => {
   return pictureForm.value.id && route.query.spaceId && route.query.spaceId != userStore.privateSpaceId;

@@ -157,8 +157,8 @@ function handleReset() {
 // 分享
 function handleShare(id: number) {
   shareIsShow.value = true
-  // shareLink.value = `http://localhost:5173/picture/detail?id=${id}`
-  shareLink.value = `http://www.oxncloud.cn/picture/detail?id=${id}`
+  shareLink.value = `http://localhost:5173/picture/detail?id=${id}`
+  // shareLink.value = `http://www.oxncloud.cn/picture/detail?id=${id}`
 
 }
 

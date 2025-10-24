@@ -45,14 +45,15 @@
 <script lang="ts" setup>
 import { computed, h, ref, watch } from 'vue'
 import {
-  AppstoreOutlined,
   HomeOutlined,
   LoginOutlined,
   SmileOutlined,
   UserOutlined,
   PictureFilled,
-  SketchOutlined,
-  AliwangwangOutlined
+  UsergroupAddOutlined,
+  PictureOutlined,
+  AppstoreOutlined,
+  AliwangwangOutlined, TeamOutlined
 } from '@ant-design/icons-vue'
 //@ts-ignore
 import { MenuProps, message } from 'ant-design-vue'
@@ -80,29 +81,49 @@ const originItems = ref<MenuProps['items']>([
     title: '创建图片',
   },
   {
-    key: '/admin/manage',
-    icon: () => h(UserOutlined),
-    label: '用户管理',
-    title: '用户管理',
+    key: '/admin', // 父菜单 key，建议使用一个不会冲突的路径（如 /admin）
+    icon: () => h(UserOutlined), // 可根据需要更换图标，比如用 SettingOutlined
+    label: '管理',
+    title: '管理',
+    children: [
+      {
+        key: '/admin/manage',
+        icon: () => h(UsergroupAddOutlined),
+        label: '用户管理',
+        title: '用户管理',
+      },
+      {
+        key: '/admin/pictureManage',
+        icon: () => h(PictureOutlined),
+        label: '图片管理',
+        title: '图片管理',
+      },
+      {
+        key: '/admin/spaceManage',
+        icon: () => h(AppstoreOutlined),
+        label: '空间管理',
+        title: '空间管理',
+      },
+    ],
   },
   {
-    key: '/admin/pictureManage',
-    icon: () => h(AppstoreOutlined),
-    label: '图片管理',
-    title: '图片管理',
+    key: '/user/mySpace',
+    icon: () => h(AliwangwangOutlined),
+    label: '我的空间',
+    title: '我的空间',
   },
   {
-    key: '/admin/spaceManage',
-    icon: () => h(SketchOutlined),
-    label: '空间管理',
-    title: '空间管理',
-  },
-  {
+    key: '/user/addSpace',
+    icon: () => h(TeamOutlined),
+    label: '创建团队',
+    title: '创建团队'
+  }
+ /* {
     key: '/user/messageBoard',
     icon: () => h(AliwangwangOutlined),
     label: '给我留言',
     title: '给我留言',
-  },
+  },*/
 ])
 
 //根据角色显示菜单
