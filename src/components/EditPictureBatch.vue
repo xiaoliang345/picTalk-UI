@@ -3,10 +3,10 @@
         <div style="color: #888; font-size: 12px; margin-bottom: 10px;">* 只对当前页面的图片生效</div>
         <a-form :model="searchForm">
             <a-form-item label="类型">
-                <a-select v-model:value="searchForm.category" :options="categoryOptions" placeholder="选择图片分类" />
+                <a-select v-model:value="searchForm.category" :options="categoryMap" placeholder="选择图片分类" />
             </a-form-item>
             <a-form-item label="标签">
-                <a-select mode="tags" v-model:value="searchForm.tags" :options="tagOptions" placeholder="选择图片标签" />
+                <a-select mode="tags" v-model:value="searchForm.tags" :options="tagMap" placeholder="选择图片标签" />
             </a-form-item>
             <a-form-item label="命名规则">
                 <a-input v-model:value="searchForm.nameRule" placeholder="请输入命名规则，输入{序号}可动态生成" />
@@ -41,8 +41,8 @@ const searchForm = ref({
     spaceId: userStore.showSpaceId,
     nameRule: ''
 })
-let tagOptions = ref(publicStore.tagOptions) //标签选项
-let categoryOptions = ref(publicStore.categoryOptions) //分类选项
+let tagMap = ref(publicStore.tagMap) //标签选项
+let categoryMap = ref(publicStore.categoryMap) //分类选项
 
 const handleSubmit = async () => {
     // 这里处理提交逻辑

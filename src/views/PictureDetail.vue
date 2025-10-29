@@ -1,6 +1,8 @@
 <template>
   <div id="pictureDetail">
-    <a-row :gutter="16">
+    <!-- 图片详情组件 -->
+    <ImagePreview :modelData="picture" />
+    <!--  <a-row :gutter="16">
       <a-col :xs="24" :sm="16" :md="16" :lg="16">
         <a-card title="图片预览">
           <a-image class="img" :src="picture?.url" />
@@ -37,14 +39,14 @@
                 <template #icon>
                   <DownloadOutlined />
                 </template>
-              </a-button>
-              <a-button @click="handleShare(picture?.id)">
-                分享
-                <template #icon>
+</a-button>
+<a-button @click="handleShare(picture?.id)">
+  分享
+  <template #icon>
                   <ShareAltOutlined />
                 </template>
-              </a-button>
-              <template v-if="userStore.user.userRole == 'admin'">
+</a-button>
+<template v-if="userStore.user.userRole == 'admin'">
                 <a-button @click="handleUpdate">
                   <EditFilled />
                   编辑
@@ -54,12 +56,12 @@
                   删除
                 </a-button>
               </template>
-            </a-space>
-          </div>
-        </a-card>
-      </a-col>
-    </a-row>
-    <share v-model:shareIsShow="shareIsShow" :shareLink="shareLink" />
+</a-space>
+</div>
+</a-card>
+</a-col>
+</a-row>
+<share v-model:shareIsShow="shareIsShow" :shareLink="shareLink" /> -->
   </div>
 </template>
 <script lang="ts" setup>
@@ -67,15 +69,13 @@
 import { deletePictureUsingPost, getPictureVoByIdUsingGet } from '@/api/pictureController.ts'
 import { onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
-import { DownloadOutlined, DeleteFilled, EditFilled, ShareAltOutlined } from '@ant-design/icons-vue'
 import router from '@/router'
 import { message } from 'ant-design-vue'
 import { downloadImage } from '@/utils'
 import { useUserStore } from '@/stores/userStore.ts'
-import Share from '@/components/Share.vue'
+import ImagePreview from '@/components/ImageInfo.vue'
 
 const route = useRoute()
-const userStore = useUserStore()
 let picture = ref<API.PictureVO>() //图片属性
 const shareLink = ref('') //二维码链接
 let shareIsShow = ref(false) //是否显示二维码
@@ -83,8 +83,9 @@ let shareIsShow = ref(false) //是否显示二维码
 async function getPictureData() {
   const res = await getPictureVoByIdUsingGet({ id: route.query.id })
   if (res.data.code === 200) {
-    let data = res.data.data
-    picture.value = data
+    picture.value = res.data.data
+    console.log(picture.value);
+
   }
 }
 
@@ -118,7 +119,6 @@ function handleUpdate() {
 
 // 处理下载
 const doDownload = () => {
-  console.log(1)
   downloadImage(picture.value?.url)
 }
 

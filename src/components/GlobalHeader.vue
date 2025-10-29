@@ -1,15 +1,15 @@
 <template>
   <div id="globalHeader">
     <a-row :wrap="false">
-      <a-col :flex="publicStore.isFold ? '100px' : '140px'">
+      <a-col>
         <router-link to="/">
           <div class="title-bar">
-            <img v-if="!publicStore.isFold" src="@/assets/logo.png" alt="logo" />
+            <img v-if="!publicStore.isMobile" src="@/assets/logo.png" alt="logo" />
             <div class="title">图语空间</div>
           </div>
         </router-link>
       </a-col>
-      <a-col flex="auto" :style="{ marginLeft: publicStore.isFold ? '0px' : '40px' }">
+      <a-col flex="auto" :style="{ marginLeft: publicStore.isMobile ? '0px' : '40px' }">
         <a-menu v-model:selectedKeys="current" @click="doMenuClick" mode="horizontal" :items="items" />
       </a-col>
       <a-col>
@@ -42,18 +42,17 @@
     </a-row>
   </div>
 </template>
+
 <script lang="ts" setup>
 import { computed, h, ref, watch } from 'vue'
 import {
   HomeOutlined,
   LoginOutlined,
   SmileOutlined,
-  UserOutlined,
   PictureFilled,
   UsergroupAddOutlined,
   PictureOutlined,
   AppstoreOutlined,
-  AliwangwangOutlined, TeamOutlined
 } from '@ant-design/icons-vue'
 //@ts-ignore
 import { MenuProps, message } from 'ant-design-vue'
@@ -61,6 +60,8 @@ import { useRouter } from 'vue-router'
 import { useUserStore } from '@/stores/userStore'
 import { userLogoutUsingPost } from '@/api/userController.ts'
 import { usePublicStore } from '@/stores/publicStore.ts'
+import { Icon } from '@iconify/vue'
+
 
 const userStore = useUserStore()
 const publicStore = usePublicStore()
@@ -70,60 +71,47 @@ const current = ref<string[]>([])
 const originItems = ref<MenuProps['items']>([
   {
     key: '/',
-    icon: () => h(HomeOutlined),
+    icon: () => h(Icon, {
+      icon: "fluent-color:home-16",
+      width: 22
+    }),
     label: '主页',
     title: '主页',
   },
   {
     key: '/add_picture',
-    icon: () => h(PictureFilled),
+    icon: () => h(Icon, {
+      icon: "flat-color-icons:add-image",
+      width: 22
+    }),
     label: '创建图片',
     title: '创建图片',
   },
   {
-    key: '/admin', // 父菜单 key，建议使用一个不会冲突的路径（如 /admin）
-    icon: () => h(UserOutlined), // 可根据需要更换图标，比如用 SettingOutlined
-    label: '管理',
-    title: '管理',
-    children: [
-      {
-        key: '/admin/manage',
-        icon: () => h(UsergroupAddOutlined),
-        label: '用户管理',
-        title: '用户管理',
-      },
-      {
-        key: '/admin/pictureManage',
-        icon: () => h(PictureOutlined),
-        label: '图片管理',
-        title: '图片管理',
-      },
-      {
-        key: '/admin/spaceManage',
-        icon: () => h(AppstoreOutlined),
-        label: '空间管理',
-        title: '空间管理',
-      },
-    ],
+    key: '/admin/manage',
+    icon: () => h(UsergroupAddOutlined),
+    label: '用户管理',
+    title: '用户管理',
   },
   {
-    key: '/user/mySpace',
-    icon: () => h(AliwangwangOutlined),
-    label: '我的空间',
-    title: '我的空间',
+    key: '/admin/pictureManage',
+    icon: () => h(PictureOutlined),
+    label: '图片管理',
+    title: '图片管理',
   },
   {
-    key: '/user/addSpace',
-    icon: () => h(TeamOutlined),
-    label: '创建团队',
-    title: '创建团队'
+    key: '/admin/spaceManage',
+    icon: () => h(AppstoreOutlined),
+    label: '空间管理',
+
+    title: '空间管理',
   }
- /* {
-    key: '/user/messageBoard',
-    icon: () => h(AliwangwangOutlined),
-    label: '给我留言',
-    title: '给我留言',
-  },*/
+  /* {
+     key: '/user/messageBoard',
+     icon: () => h(AliwangwangOutlined),
+     label: '给我留言',
+     title: '给我留言',
+   },*/
 ])
 
 //根据角色显示菜单
@@ -170,7 +158,9 @@ watch(
   },
   { immediate: true },
 )
+
 </script>
+
 <style scoped>
 .user-login {
   display: flex;

@@ -20,30 +20,33 @@
     <!--    搜索表单-->
     <a-form class="search" layout="inline" :model="searchForm">
       <a-form-item label="关键词">
-        <a-input style="width: 140px;" v-model:value="searchForm.searchText" placeholder="输入图片名称或简介" />
+        <a-input v-model:value="searchForm.searchText" placeholder="输入图片名称或简介" />
       </a-form-item>
       <a-form-item label="类型">
-        <a-select v-model:value="searchForm.category" :options="categoryOptions" placeholder="选择图片分类" />
+        <a-select style="width: 100px;" v-model:value="searchForm.category" :options="categoryMap"
+          placeholder="选择图片分类" />
       </a-form-item>
-      <a-form-item label="标签" style="width: 140px;">
-        <a-select mode="tags" v-model:value="searchForm.tags" :options="tagOptions" placeholder="选择图片标签" />
+      <a-form-item label="格式">
+        <a-input style="width: 100px;" v-model:value="searchForm.picFormat" placeholder="输入格式" />
       </a-form-item>
-      <a-form-item label="日期">
+      <a-form-item label="标签">
+        <a-select style="width: 135px;" mode="tags" v-model:value="searchForm.tags" :options="tagMap"
+          placeholder="选择图片标签" />
+      </a-form-item>
+      <a-form-item label="日期" v-show="!publicStore.isFold">
         <a-range-picker v-model:value="rangTime" value-format="YYYY/MM/DD HH:mm:ss" />
       </a-form-item>
       <a-form-item label="高度">
-        <a-input-number v-model:value="searchForm.picHeight" placeholder="输入高度" />
+        <a-input-number style="width: 105px;" v-model:value="searchForm.picHeight" placeholder="输入高度" />
       </a-form-item>
       <a-form-item label="宽度">
-        <a-input-number v-model:value="searchForm.picWidth" placeholder="输入宽度" />
+        <a-input-number style="width: 105px;" v-model:value="searchForm.picWidth" placeholder="输入宽度" />
       </a-form-item>
-      <a-form-item label="格式">
-        <a-input style="width: 183px;" v-model:value="searchForm.picFormat" placeholder="输入格式" />
-      </a-form-item>
+
       <a-form-item label="按颜色搜索">
         <color-picker v-model:pureColor="pureColor" format="hex" />
       </a-form-item>
-      <div>
+      <div style="margin: 5px 0;">
         <a-space>
           <a-button @click="handleSearch" type="primary">搜索</a-button>
           <a-button @click="handleReset">重置</a-button>
@@ -71,18 +74,23 @@
         批量编辑
       </a-button>
     </a-space>
-    <!--    卡片区域-->
-    <PictureCards :pictures="pictures" @handleDelete="init" :role="role" @handleShare="handleShare" />
+
+    <!-- 图片列表 -->
+    <PictureCardList :pictures="pictures" @getPictureInfo="getPictureInfo" />
+
+    <a-modal v-model:open="modelOpen" width="70%" :footer="null" :closable="false">
+      <!-- 图片详情详情 -->
+      <ImagePreview :picture="pictureInfo" />
+    </a-modal>
+
     <pagination :page-size-options="pageSizeOptions" :total="total" @handlePageChange="handlePageChange"
       :searchForm="searchForm" />
     <EditPictureBatch ref="editPictureBatch" :pictures @handleUpateBatch="init" />
-    <share v-model:shareIsShow="shareIsShow" :shareLink="shareLink" />
   </div>
 </template>
 <script lang="ts" setup>
 import { ColorPicker } from 'vue3-colorpicker'
 import 'vue3-colorpicker/style.css'
-import PictureCards from '@/components/PictureCards.vue'
 import { useUserStore } from '@/stores/userStore.ts'
 import { PlusOutlined, EditOutlined, LineChartOutlined } from '@ant-design/icons-vue'
 import { useRouter } from 'vue-router'
@@ -96,7 +104,9 @@ import { usePublicStore } from '@/stores/publicStore.ts'
 import { getSpaceVoByIdUsingGet } from '@/api/spaceController.ts'
 import EditPictureBatch from '@/components/EditPictureBatch.vue'
 import { useRoute } from 'vue-router'
-import Share from '@/components/Share.vue'
+import ImagePreview from '@/components/ImageInfo.vue'
+import PictureCardList from '@/components/PictureCardList.vue'
+import '@/assets/css/modal.less'
 
 const router = useRouter()
 const route = useRoute()
@@ -107,13 +117,13 @@ let space = ref<API.SpaceVO>() //当前空间信息
 const pictures = ref<API.PictureVO[]>([]) //该空间的图片
 const total = ref(0) //总数
 const pageSizeOptions = ref<string[]>(['10', '20']) //分页显示数量
-let tagOptions = ref(publicStore.tagOptions) //标签选项
-let categoryOptions = ref(publicStore.categoryOptions) //分类选项
+let tagMap = ref(publicStore.tagMap) //标签选项
+let categoryMap = ref(publicStore.categoryMap) //分类选项
 let pureColor = ref('black') //按颜色搜索颜色
 let percent = ref(0) //占用空间百分比
 let role = ref('') //当前用户在其团队空间的角色
-const shareLink = ref('') //二维码链接
-let shareIsShow = ref(false) //是否显示二维码
+let modelOpen = ref(false);//图片详情弹窗
+let pictureInfo = ref<API.PictureVO>();//图片详情数据
 
 const searchForm = reactive<API.PictureQueryRequest>({
   current: 1,
@@ -154,12 +164,10 @@ function handleReset() {
   getPictureBySpaceId()
 }
 
-// 分享
-function handleShare(id: number) {
-  shareIsShow.value = true
-  shareLink.value = `http://localhost:5173/picture/detail?id=${id}`
-  // shareLink.value = `http://www.oxncloud.cn/picture/detail?id=${id}`
-
+// 获取图片详情
+function getPictureInfo(item: API.PictureVO) {
+  pictureInfo.value = item;
+  modelOpen.value = true;
 }
 
 //页码发生变化的回调
@@ -209,6 +217,8 @@ async function getPictureBySpaceId() {
   const res = await listPictureVoByPageUsingPost(searchForm)
   if (res.data.code == 200) {
     pictures.value = res.data.data?.records ?? []
+    console.log(pictures.value);
+
     total.value = res.data.data?.total ?? 0
   }
 }
@@ -266,10 +276,6 @@ watch(
   },
   { immediate: true },
 )
-
-/*onMounted(async () => {
-  await init()
-})*/
 </script>
 <style scoped lang="less">
 #spacePage {

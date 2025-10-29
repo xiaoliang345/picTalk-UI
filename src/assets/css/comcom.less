@@ -1,0 +1,47 @@
+.ant-form-item {
+  :deep(.ant-row) {
+    flex-wrap: nowrap !important;
+  }
+}
+
+@media (max-width: 575px) {
+  :where(.css-dev-only-do-not-override-1p3hq3p).ant-form .ant-form-item .ant-form-item-label,
+  :where(.css-dev-only-do-not-override-1p3hq3p).ant-form .ant-form-item .ant-form-item-control {
+    flex: auto !important;
+  }
+}
+
+@media (max-width: 575px) {
+  :where(.css-dev-only-do-not-override-1p3hq3p).ant-form-item .ant-form-item-label > label {
+    margin: 0 5px;
+  }
+}
+
+:where(.css-dev-only-do-not-override-1p3hq3p).ant-form-inline .ant-form-item {
+  margin: 5px;
+}
+
+:where(
+    .css-dev-only-do-not-override-1p3hq3p,
+    css-dev-only-do-not-override-1p3hq3p
+  ).ant-menu-light.ant-menu-horizontal
+  > .ant-menu-item-selected,
+:where(
+    .css-dev-only-do-not-override-1p3hq3p,
+    css-dev-only-do-not-override-1p3hq3p
+  ).ant-menu-light.ant-menu-horizontal
+  > .ant-menu-submenu-selected {
+  display: flex;
+  align-items: center;
+}
+
+:where(.css-dev-only-do-not-override-1p3hq3p).ant-menu-light.ant-menu-horizontal > .ant-menu-item,
+:where(.css-dev-only-do-not-override-1p3hq3p).ant-menu-light.ant-menu-horizontal
+  > .ant-menu-submenu {
+  display: flex;
+  align-items: center;
+}
+
+:where(.css-dev-only-do-not-override-1p3hq3p).ant-tabs .ant-tabs-tab + .ant-tabs-tab {
+  margin: 0 0 0 24px;
+}

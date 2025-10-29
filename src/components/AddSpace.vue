@@ -64,15 +64,6 @@ async function handleAddOrUpdate() {
   if (res.data.code === 200) {
     if (type.value == 0) {
       mes = '创建成功'
-      /* await userStore.listMyTeamSpace().then(()=>{
-         let spaceId=userStore.userSpacePublicList.find(item=>{
-           if(userStore.user.id==item.space?.userId){
-             return item.id;
-           }
-         })?.space.id;
-         console.log(spaceId)
-         router.push(`/user/teamSpace?id=${spaceId}`)
-       })*/
       await userStore.listMyTeamSpace()
       location.reload()
     } else {

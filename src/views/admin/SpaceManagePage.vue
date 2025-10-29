@@ -1,6 +1,6 @@
 <template>
   <div class="spaceManagePage">
-    <a-form class="search" layout="inline" :model="searchForm">
+    <a-form class="search" layout="inline" :model="searchForm" :label-col="{ style: { width: '70px' } }">
       <a-form-item label="空间名称">
         <a-input v-model:value="searchForm.spaceName" placeholder="输入要查询的空间名称" />
       </a-form-item>
@@ -8,7 +8,7 @@
         <a-input v-model:value="searchForm.userId" placeholder="输入要查询的用户id" />
       </a-form-item>
       <a-form-item label="空间级别">
-        <a-select v-model:value="searchForm.spaceLevel" placeholder="输入要查询的空间级别" style="width: 100%">
+        <a-select v-model:value="searchForm.spaceLevel" placeholder="输入要查询的空间级别" style="width: 180px">
           <a-select-option :value="key" v-for="(value, key, index) in SPACE_STATUS_MAP" :key="index">{{ value }}
           </a-select-option>
         </a-select>

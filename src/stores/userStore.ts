@@ -17,31 +17,30 @@ export const useUserStore = defineStore('user', () => {
 
   // 获取我加入的团队空间
   async function listMyTeamSpace() {
-    if(user.value.id){
+    if (user.value.id) {
       const res = await listMyTeamSpaceUsingPost()
       if (res.data.code == 200) {
-        userSpacePublicList.value =res.data.data.filter((item) => {
-          console.log(item)
-            if (item.space.spaceType==1) return item
+        userSpacePublicList.value =
+          res.data.data.filter((item) => {
+            if (item.space.spaceType == 1) return item
           }) || []
       }
-
     }
   }
 
   // 获取某个空间信息
   async function getSpaceUser() {
-   if (user.value.id){
-     const res = await getSpaceUserUsingPost({ spaceId: showSpaceId.value, userId: user.value.id })
-     if (res.data.code == 200) {
-       userSpaceInfo.value = res.data.data ?? {}
-     }
-   }
+    if (user.value.id) {
+      const res = await getSpaceUserUsingPost({ spaceId: showSpaceId.value, userId: user.value.id })
+      if (res.data.code == 200) {
+        userSpaceInfo.value = res.data.data ?? {}
+      }
+    }
   }
 
   // 获取用户的空间列表
   async function getUserSpaceList() {
-    if(user.value.id){
+    if (user.value.id) {
       const res = await listSpaceVoByPageUsingPost({ userId: user.value.id })
       if (res.data.code == 200) {
         userSpacePrivate.value = res.data.data ?? {}

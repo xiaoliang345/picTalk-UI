@@ -64,16 +64,13 @@ const copyLink = () => {
     })
 }
 watch(() => props.shareLink, (newValue) => {
-  console.log(newValue);
+  console.log("hh" + newValue);
   shareLink.value = newValue;
 }, { immediate: true })
 </script>
 
 <style scoped lang="less">
 .share-modal {
-
-
-
   .share-card {
     margin: 0 auto;
     box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
@@ -135,6 +132,18 @@ watch(() => props.shareLink, (newValue) => {
   color: rgba(0, 0, 0, 0.45);
   font-size: 14px;
   margin: 0;
+}
+
+:deep(.ant-modal-content) {
+  padding: 0px !important;
+}
+
+:deep(.ant-modal) {
+  padding: 0px !important;
+}
+
+:where(.css-dev-only-do-not-override-1p3hq3p).ant-modal .ant-modal-content {
+  padding: 0px !important;
 }
 
 @media (min-width: 768px) {

@@ -1,58 +1,54 @@
 <template>
   <div id="homeView">
-    <a-form class="search" layout="inline" :model="searchForm">
-      <a-form-item label="关键词">
-        <a-input style="width: 183px" v-model:value="searchForm.searchText" placeholder="输入图片名称或简介" />
-      </a-form-item>
-      <a-form-item>
-        <a-space>
-          <a-button @click="handleSearch" type="primary">搜索</a-button>
-          <a-button @click="handleReset">重置</a-button>
-        </a-space>
-      </a-form-item>
-    </a-form>
-    <div class="categorys">
-      <a-tabs v-model:activeKey="searchForm.category">
-        <a-tab-pane key="" tab="全部"></a-tab-pane>
-        <a-tab-pane v-for="(category, index) in categoryOptions" :key="category.value"
-          :tab="category.label"></a-tab-pane>
-      </a-tabs>
-    </div>
-    <div class="tags">
-      <a-space :size="[0, 8]" wrap>
-        <span style="margin-right: 8px">标签：</span>
+    <div class="search-container">
+      <a-form class="search" layout="inline" :model="searchForm">
+        <a-form-item>
+          <a-input allow-clear v-model:value="searchForm.searchText" placeholder="输入图片名称或简介" />
+        </a-form-item>
+        <a-form-item>
+          <a-space>
+            <a-button @click="handleSearch" type="primary">搜索</a-button>
+            <!-- <a-button @click="handleReset">重置</a-button> -->
+          </a-space>
+        </a-form-item>
+      </a-form>
+      <div class="categorys">
+        <a-tabs v-model:activeKey="searchForm.category">
+          <a-tab-pane key="" tab="全部"></a-tab-pane>
+          <a-tab-pane v-for="(category, index) in categoryMap" :key="category.label">
+            <!-- 自定义 tab 标签内容 -->
+            <template #tab>
+              <span style="display: flex; align-items: center; ">
+                <AppIcon :icon="category.icon" :width="22"></AppIcon>
+                <span style="margin-left: 5px;">{{ category.label }}</span>
+              </span>
+            </template>
+          </a-tab-pane>
+        </a-tabs>
+      </div>
+      <div class="tags">
+        <a-space :size="[0, 8]" wrap>
+          <!-- <span style="margin-right: 8px">标签：</span> -->
 
-        <a-checkable-tag v-for="(tag, index) in tagOptions" :key="tag" v-model:checked="selectTags[index]"
-          @change="handleSelect(index)">
-          {{ tag.label }}
-        </a-checkable-tag>
-      </a-space>
+          <a-checkable-tag style="margin: 0px 10px;" v-for="(tag, index) in tagMap" :key="tag"
+            v-model:checked="selectTags[index]" @change="handleSelect(index)">
+            {{ tag.label }}
+          </a-checkable-tag>
+        </a-space>
+      </div>
     </div>
     <!-- 图片列表 -->
-    <a-list :grid="{ gutter: 16, xs: 2, md: 3, lg: 4, xl: 5, xxl: 8 }" :data-source="data" :loading="loading">
-      <template #renderItem="{ item }">
-        <a-list-item @click="getImgDetail(item)">
-          <a-card hoverable>
-            <template #cover>
-              <a-image :src="item.thumbnailUrl" :preview="false" />
-            </template>
-            <a-card-meta :title="item.name">
-              <template #description>
-                <a-space>
-                  <a-tag v-for="(tag, index) in item.tags" :key="index">
-                    {{ tag }}
-                  </a-tag>
-                </a-space>
-              </template>
-            </a-card-meta>
-          </a-card>
-        </a-list-item>
-      </template>
-    </a-list>
+    <PictureCardList :pictures="data" @getPictureInfo="getPictureInfo" />
+
+    <a-modal v-model:open="modelOpen" width="70%" :footer="null" :closable="false">
+      <!-- 图片详情详情 -->
+      <ImagePreview :picture="pictureInfo" @handleDeleteSuccess="handleDeleteSuccess" />
+    </a-modal>
 
     <pagination :page-size-options="pageSizeOptions" :total="total" @handlePageChange="handlePageChange"
       :searchForm="searchForm" />
   </div>
+
 </template>
 <script lang="ts" setup>
 import { onMounted, reactive, ref, watch } from 'vue'
@@ -60,23 +56,26 @@ import {
   listPictureVoByPageUsingPost,
 } from '@/api/pictureController.ts'
 import Pagination from '@/components/Pagination.vue'
-import { useRouter } from 'vue-router'
 import { usePublicStore } from '@/stores/publicStore.ts'
-const router = useRouter()
+
+import ImagePreview from '@/components/ImageInfo.vue'
+import PictureCardList from '@/components/PictureCardList.vue'
+import '@/assets/css/modal.less'
 
 const publicStore = usePublicStore();
-const data = ref<API.UserVO[]>([]) //数据
-const pageSizeOptions = ref<string[]>(['10', '20']) //分页显示数量
+const data = ref<API.PictureVO[]>([])
+const pageSizeOptions = ref<string[]>(['10', '20', '30']) //分页显示数量
 const total = ref(0) //总数
-let loading = ref(false) //加载中
-let tagOptions = ref() //标签选项
-let categoryOptions = ref() //分类选项
+let tagMap = ref() //标签选项
+let categoryMap = ref() //分类选项
 let selectTags = ref();//tag选中
+let modelOpen = ref(false);//图片详情弹窗
+let pictureInfo = ref<API.PictureVO>();//图片详情数据
 
 //搜索表单
 const searchForm = reactive<API.PictureQueryRequest>({
   current: 1,
-  pageSize: 10,
+  pageSize: 20,
   searchText: '',
   category: '',
   tags: [],
@@ -85,48 +84,29 @@ const searchForm = reactive<API.PictureQueryRequest>({
 })
 
 // 获取图片详情
-function getImgDetail(item: API.UserVO) {
-  router.push({
-    path: '/picture/detail',
-    query: {
-      id: item.id,
-    },
-  })
+function getPictureInfo(item: API.PictureVO) {
+  pictureInfo.value = item;
+  modelOpen.value = true;
 }
 // 搜索
 async function handleSearch() {
   searchForm.current = 1
-  const res = await listPictureVoByPageUsingPost(searchForm)
-  if (res.data.code == 200) {
-    data.value = res.data.data.records ?? []
-    total.value = res.data.data.total ?? 0
-  }
+  await getData();
 }
 
 watch([() => searchForm.category, () => searchForm.tags], () => {
   handleSearch()
 })
 
-// 重置搜索
-function handleReset() {
-  searchForm.current = 1
-  searchForm.pageSize = 10
-  searchForm.searchText = ''
-  searchForm.category = ''
-  searchForm.tags = []
-  selectTags.value = new Array(tagOptions.value.length).fill(false);
-  getData()
-}
-
 // 标签选中
 const handleSelect = (index: number) => {
   let set = new Set([...searchForm.tags]);
   if (selectTags.value[index]) {
-    set.add(tagOptions.value[index].value);
+    set.add(tagMap.value[index].value);
 
   }
   else {
-    set.delete(tagOptions.value[index].value);
+    set.delete(tagMap.value[index].value);
   }
   searchForm.tags = [...set];
 };
@@ -147,86 +127,69 @@ async function getData() {
   }
 }
 
+// 删除成功回调
+const handleDeleteSuccess = () => {
+  modelOpen.value = false;
+  handleSearch()
+}
+
 onMounted(async () => {
   await getData()
-  tagOptions.value = publicStore.tagOptions;
-  categoryOptions.value = publicStore.categoryOptions;
-  selectTags.value = new Array(tagOptions.value.length).fill(false);
+  tagMap.value = publicStore.tagMap;
+  categoryMap.value = publicStore.categoryMap;
+  selectTags.value = new Array(tagMap.value.length).fill(false);
 })
+
 </script>
+
 <style scoped lang="less">
+@import '@/assets/css/modal.less';
+
 #homeView {
   padding-bottom: 30px;
 
-  :deep(.ant-space) {
-    flex-wrap: wrap;
-  }
-
-  .categorys {
+  .search-container {
     display: flex;
-    margin: 15px 5px;
-    align-items: flex-start;
+    justify-content: space-between;
+    align-items: center;
+    // margin-bottom: 20px;
     flex-direction: column;
-    flex-wrap: wrap;
-
-
-
-    :deep(.ant-tabs-nav) {
-      margin: 0;
-    }
-
-    :deep(.ant-tabs-nav-list) {
-      flex-wrap: wrap;
-    }
-  }
-
-  .tags {
-    margin: 15px 5px;
-    padding: 5px 0;
-
-    :deep(.ant-tag) {
-      font-size: 14px;
-    }
-  }
-
-  .search {
-    margin: 15px 0;
-    flex-direction: row;
-  }
-
-  :deep(.ant-list-item) {
-    padding: 0 5px;
-  }
-
-  :deep(.ant-image) {
-    margin: auto;
-    width: 100%;
-    height: auto;
-    aspect-ratio: 1 / 1;
-    overflow: hidden;
-    border-radius: 8px 8px 0 0;
-  }
-
-  :deep(.ant-image-img) {
-    height: 100%;
-    width: auto;
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
   }
 }
 
-@media screen and (max-width: 500px) {
-  #homeView {
-    .search {
-      flex-direction: column;
+:deep(.ant-space) {
+  flex-wrap: wrap;
+}
 
-      :deep(.ant-space) {
-        margin-top: 10px;
+.categorys {
+  display: flex;
+  margin: 10px 0px;
+  align-items: flex-start;
+  flex-direction: column;
+  flex-wrap: wrap;
 
 
-      }
-    }
+
+  :deep(.ant-tabs-nav) {
+    margin: 0;
   }
+
+  :deep(.ant-tabs-nav-list) {
+    flex-wrap: wrap;
+  }
+}
+
+.tags {
+  margin: 15px 5px;
+  padding: 5px 0;
+
+  :deep(.ant-tag) {
+    font-size: 14px;
+  }
+}
+
+.search {
+  margin: 5px 0;
+  flex-direction: row;
 }
 </style>

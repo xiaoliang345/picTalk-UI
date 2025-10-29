@@ -1,11 +1,11 @@
 <template>
   <div class="userManagePage">
-    <a-form class="search" layout="inline" :model="searchForm">
+    <a-form class="search" layout="inline" :model="searchForm" :label-col="{ style: { width: '70px' } }">
       <a-form-item label="账号">
-        <a-input v-model:value="searchForm.userAccount" placeholder="输入要查询的账号" />
+        <a-input style="width: 180px" v-model:value="searchForm.userAccount" placeholder="输入要查询的账号" />
       </a-form-item>
       <a-form-item label="用户名">
-        <a-input v-model:value="searchForm.userName" placeholder="输入要查询的用户名" />
+        <a-input style="width: 180px" v-model:value="searchForm.userName" placeholder="输入要查询的用户名" />
       </a-form-item>
       <a-form-item>
         <a-space>

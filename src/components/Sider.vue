@@ -7,6 +7,7 @@ import { MailOutlined, TeamOutlined, UserDeleteOutlined } from '@ant-design/icon
 import router from '@/router'
 import { useUserStore } from '@/stores/userStore.ts'
 import { usePublicStore } from '@/stores/publicStore.ts'
+import { Icon } from '@iconify/vue'
 
 const userStore = useUserStore()
 const publicStore = usePublicStore()
@@ -14,13 +15,19 @@ const selectedKeys = ref([])
 const items = ref([
   {
     key: '/user/mySpace',
-    icon: () => h(UserDeleteOutlined),
+    icon: () => h(Icon, {
+      icon: "fluent-color:person-48",
+      width: 22
+    }),
     label: '个人空间',
     title: '个人空间'
   },
   {
     key: '/user/addSpace',
-    icon: () => h(TeamOutlined),
+    icon: () => h(Icon, {
+      icon: "fluent-color:people-team-16",
+      width: 22
+    }),
     label: '创建团队',
     title: '创建团队'
   }

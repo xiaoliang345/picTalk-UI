@@ -1,19 +1,19 @@
 <template>
   <div class="pictureManagePage">
-    <a-form class="search" layout="inline" :model="searchForm">
+    <a-form class="search" layout="inline" :model="searchForm" :label-col="{ style: { width: '70px' } }">
       <a-form-item label="关键词">
-        <a-input style="width: 183px" v-model:value="searchForm.searchText" placeholder="输入图片名称或简介" />
+        <a-input style="width: 180px" v-model:value="searchForm.searchText" placeholder="输入图片名称或简介" />
       </a-form-item>
       <a-form-item label="类型">
-        <a-select style="width: 183px" v-model:value="searchForm.category" :options="categoryOptions"
+        <a-select style="width: 180px" v-model:value="searchForm.category" :options="categoryMap"
           placeholder="选择图片分类" />
       </a-form-item>
       <a-form-item label="标签">
-        <a-select style="width: 183px" mode="tags" v-model:value="searchForm.tags" :options="tagOptions"
+        <a-select style="width: 180px" mode="tags" v-model:value="searchForm.tags" :options="tagMap"
           placeholder="选择图片标签" />
       </a-form-item>
       <a-form-item label="审核状态">
-        <a-select style="width: 183px" v-model:value="searchForm.reviewStatus" :options="PIC_REVIEW_STATUS_OPTIONS"
+        <a-select style="width: 180px" v-model:value="searchForm.reviewStatus" :options="PIC_REVIEW_STATUS_OPTIONS"
           placeholder="选择图片标签" />
       </a-form-item>
       <a-form-item>
@@ -86,14 +86,11 @@
       </template>
     </a-table>
     <a-modal v-model:open="open" title="对话框" @ok="handleOk" @cancel="handleCancel">
-      <a-textarea v-model:value="reviewForm.reviewMessage" placeholder="请输入审核信息"></a-textarea>
-    </a-modal>
-    <a-modal v-model:open="deleteModalOpen" title="警告" @ok="handleDeleteBatch"
-      @cancel="() => { deleteModalOpen = false }">
-      <div>
-        <p>确定要删除这些图片吗？</p>
-        <p>删除后无法恢复，请谨慎操作。</p>
-      </div>
+      <a-form>
+        <a-form-item>
+          <a-textarea v-model:value="reviewForm.reviewMessage" placeholder="请输入审核信息"></a-textarea>
+        </a-form-item>
+      </a-form>
     </a-modal>
     <pagination :page-size-options="pageSizeOptions" :total="total" @handlePageChange="handlePageChange"
       :searchForm="searchForm" />
@@ -105,11 +102,9 @@ import { onMounted, reactive, ref, computed } from 'vue'
 import dayjs from 'dayjs'
 import { message } from 'ant-design-vue'
 import {
-  // deletePictureByBatchUsingPost,
   deletePictureUsingPost,
   doPictureReviewUsingPost,
   listPictureByPageUsingPost,
-  listPictureTagCategoryUsingGet,
 } from '@/api/pictureController.ts'
 import router from '@/router'
 import Pagination from '@/components/Pagination.vue'
@@ -210,8 +205,8 @@ const searchForm = reactive<API.PictureQueryRequest>({
   sortOrder: 'descend',
 })
 const pageSizeOptions = ref<string[]>(['10', '20'])
-let tagOptions = ref(publicStore.tagOptions) //标签选项
-let categoryOptions = ref(publicStore.categoryOptions) //分类选项
+let tagMap = ref(publicStore.tagMap) //标签选项
+let categoryMap = ref(publicStore.categoryMap) //分类选项
 let open = ref(false) //控制拒绝对话框的显示
 let reviewForm = ref({
   id: 0,
@@ -255,8 +250,8 @@ function addPictures() {
 async function handleOk(id: number, status: number) {
   open.value = false
   let res = await doPictureReviewUsingPost(reviewForm.value)
-  if (res?.data.code == 0) {
-    message.success('审核操作成功')
+  if (res?.data.code == 200) {
+    message.success('审核完成')
     getData()
   }
 }

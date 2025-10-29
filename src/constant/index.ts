@@ -65,8 +65,8 @@ export const SPACE_USER_ROLE_OPTIONS = Object.keys(SPACE_USER_ROLE_MAP).map((key
 
 //系统角色
 export const SYSTEM_USER_ROLE_MAP = {
-  user:'用户',
-  admin:'管理员'
+  user: '用户',
+  admin: '管理员',
 }
 export const SYSTEM_USER_ROLE_OPTIONS = Object.keys(SYSTEM_USER_ROLE_MAP).map((key) => {
   return {
@@ -74,3 +74,13 @@ export const SYSTEM_USER_ROLE_OPTIONS = Object.keys(SYSTEM_USER_ROLE_MAP).map((k
     value: key,
   }
 })
+
+//标签颜色
+export const TAG_COLOR_MAP: Record<string, string> = {
+  治愈: 'success',
+  高清: 'processing',
+  可爱: 'magenta',
+  性感: 'red',
+  风景: 'orange',
+  动漫: 'geekblue',
+}

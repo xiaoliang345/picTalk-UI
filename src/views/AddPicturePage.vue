@@ -5,7 +5,8 @@
     </h3>
     <a-tabs v-model:activeKey="addType" class="add-picture-tabs">
       <a-tab-pane key="file" tab="文件上传">
-        <PictureUpload v-model:loading="loading"  :spaceId="route.query.spaceId" :picture="picture" :onSuccess="onSuccess" />
+        <PictureUpload v-model:loading="loading" :spaceId="route.query.spaceId" :picture="picture"
+          :onSuccess="onSuccess" />
       </a-tab-pane>
       <a-tab-pane key="url" tab="地址上传">
         <PictureUploadByUrl :picture="picture" :onSuccess="onSuccess" />
@@ -25,13 +26,14 @@
         <a-input v-model:value="pictureForm.name" placeholder="输入图片名称" />
       </a-form-item>
       <a-form-item label="简介">
-        <a-input v-model:value="pictureForm.introduction" placeholder="输入图片简介" />
+        <a-textarea v-model:value="pictureForm.introduction" placeholder="输入图片简介"
+          :auto-size="{ minRows: 2, maxRows: 5 }" />
       </a-form-item>
       <a-form-item label="分类">
-        <a-select v-model:value="pictureForm.category" :options="categoryOptions" placeholder="输入图片分类" />
+        <a-select v-model:value="pictureForm.category" :options="categoryMap" placeholder="输入图片分类" />
       </a-form-item>
       <a-form-item label="标签">
-        <a-select mode="tags" v-model:value="pictureForm.tags" :options="tagOptions" placeholder="输入图片标签" />
+        <a-select mode="tags" v-model:value="pictureForm.tags" :options="tagMap" placeholder="输入图片标签" />
       </a-form-item>
       <a-form-item>
         <a-button :loading="loading" @click="handleAdd" type="primary">{{ route.query.id ? '修改' : '创建' }}
@@ -67,8 +69,8 @@ let picture = ref<API.PictureVO>() //图片属性
 let pictureForm = ref<API.PictureUpdateRequest>({
   category: '',
 }) //图片表单
-let tagOptions = ref(publicStore.tagOptions) //标签选项
-let categoryOptions = ref(publicStore.categoryOptions) //分类选项
+let tagMap = ref(publicStore.tagMap) //标签选项
+let categoryMap = ref(publicStore.categoryMap) //分类选项
 let addType = ref('file')
 let showAddPictures = ref(true) //是否展示批量上传
 let cropperIsShow = ref(false) //控制croper是否显示
@@ -106,7 +108,12 @@ async function handleAdd() {
       }
       router.go(-1)
     } else {
-      message.error('创建失败' + res.data.message)
+      if (route.query.id) {
+        message.error(res.data.message)
+      }
+      else {
+        message.error(res.data.message)
+      }
     }
   }
 }
