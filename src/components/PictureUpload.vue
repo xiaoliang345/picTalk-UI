@@ -1,6 +1,6 @@
 <template>
   <div id="avatar-uploader">
-    <a-upload :disabled="loading"  list-type="picture-card" :show-upload-list="false" :before-upload="beforeUpload"
+    <a-upload :disabled="loading" list-type="picture-card" :show-upload-list="false" :before-upload="beforeUpload"
       :custom-request="handleChange">
       <img v-if="picture?.url" :src="picture?.url" alt="avatar" />
       <div v-else>
@@ -24,12 +24,12 @@ interface Props {
   onSuccess?: (picture: API.PictureVO) => void
 }
 
-const loading =defineModel('loading')
+const loading = defineModel('loading')
 
 const props = defineProps<Props>()
 
 async function handleChange({ file }: any) {
-  loading.value=true
+  loading.value = true
 
   try {
     let params = props.picture ? { id: props.picture.id } : {}
@@ -72,7 +72,7 @@ const beforeUpload = (file: UploadProps['fileList'][number]) => {
   }
 
   img {
-    height: 80%;
+    height: 90%;
   }
 }
 

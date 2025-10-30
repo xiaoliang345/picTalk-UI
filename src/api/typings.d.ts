@@ -1,31 +1,29 @@
 declare namespace API {
+  type AiImageTaskResult = {
+    createTime?: number
+    description?: string
+    errorMsg?: string
+    resultUrl?: string
+    status?: 'PENDING' | 'PROCESSING' | 'SUCCESS' | 'FAILED'
+    taskId?: string
+    updateTime?: number
+  }
+
+  type BaseResponseAiImageTaskResult_ = {
+    code?: number
+    data?: AiImageTaskResult
+    message?: string
+  }
+
   type BaseResponseBoolean_ = {
     code?: number
     data?: boolean
     message?: string
   }
 
-  type BaseResponseCreateOutPaintingTaskResponse_ = {
-    code?: number
-    data?: CreateOutPaintingTaskResponse
-    message?: string
-  }
-
-  type BaseResponseGetOutPaintingTaskResponse_ = {
-    code?: number
-    data?: GetOutPaintingTaskResponse
-    message?: string
-  }
-
   type BaseResponseInt_ = {
     code?: number
     data?: number
-    message?: string
-  }
-
-  type BaseResponseListImageSearchResult_ = {
-    code?: number
-    data?: ImageSearchResult[]
     message?: string
   }
 
@@ -74,12 +72,6 @@ declare namespace API {
   type BaseResponseListSpaceUserVO_ = {
     code?: number
     data?: SpaceUserVO[]
-    message?: string
-  }
-
-  type BaseResponseLoginUserVO_ = {
-    code?: number
-    data?: LoginUserVO
     message?: string
   }
 
@@ -173,113 +165,55 @@ declare namespace API {
     message?: string
   }
 
+  type BaseResponseUserLoginVo_ = {
+    code?: number
+    data?: UserLoginVo
+    message?: string
+  }
+
   type BaseResponseUserVO_ = {
     code?: number
     data?: UserVO
     message?: string
   }
 
-  type CreateOutPaintingTaskResponse = {
-    code?: string
-    message?: string
-    output?: Output
-    requestId?: string
-  }
-
-  type CreatePictureOutPaintingTaskRequest = {
-    parameters?: Parameters
-    pictureId?: number
-  }
-
-  type deleteMessageUsingDeleteParams = {
-    /** id */
-    id: number
-  }
-
   type DeleteRequest = {
     id?: number
   }
 
-  type GetOutPaintingTaskResponse = {
-    output?: Output1
-    requestId?: string
-  }
-
-  type getPictureByIdUsingGetParams = {
-    /** id */
-    id?: number
-  }
-
-  type getPictureOutPaintingTaskUsingGetParams = {
+  type getAiPictureStatusUsingGETParams = {
     /** taskId */
-    taskId?: string
+    taskId: string
   }
 
-  type getPictureVOByIdUsingGetParams = {
+  type getPictureByIdUsingGETParams = {
     /** id */
     id?: number
   }
 
-  type getSpaceByIdUsingGetParams = {
+  type getPictureVOByIdUsingGETParams = {
     /** id */
     id?: number
   }
 
-  type getSpaceVOByIdUsingGetParams = {
+  type getSpaceByIdUsingGETParams = {
     /** id */
     id?: number
   }
 
-  type getUserByIdUsingGetParams = {
+  type getSpaceVOByIdUsingGETParams = {
     /** id */
     id?: number
   }
 
-  type getUserVOByIdUsingGetParams = {
+  type getUserByIdUsingGETParams = {
     /** id */
     id?: number
   }
 
-  type ImageSearchResult = {
-    fromUrl?: string
-    thumbUrl?: string
-  }
-
-  type LoginUserVO = {
-    createTime?: string
-    editTime?: string
+  type getUserVOByIdUsingGETParams = {
+    /** id */
     id?: number
-    updateTime?: string
-    userAccount?: string
-    userAvatar?: string
-    userName?: string
-    userProfile?: string
-    userRole?: string
-  }
-
-  type Message = {
-    content?: string
-    createTime?: string
-    id?: number
-    updateTime?: string
-    username?: string
-  }
-
-  type Output = {
-    taskId?: string
-    taskStatus?: string
-  }
-
-  type Output1 = {
-    code?: string
-    endTime?: string
-    message?: string
-    outputImageUrl?: string
-    scheduledTime?: string
-    submitTime?: string
-    taskId?: string
-    taskMetrics?: TaskMetrics
-    taskStatus?: string
   }
 
   type PagePicture_ = {
@@ -322,20 +256,6 @@ declare namespace API {
     total?: number
   }
 
-  type Parameters = {
-    addWatermark?: boolean
-    angle?: number
-    bestQuality?: boolean
-    bottomOffset?: number
-    leftOffset?: number
-    limitImageSize?: boolean
-    outputRatio?: string
-    rightOffset?: number
-    topOffset?: number
-    xScale?: number
-    yScale?: number
-  }
-
   type Picture = {
     category?: string
     createTime?: string
@@ -350,6 +270,7 @@ declare namespace API {
     picScale?: number
     picSize?: number
     picWidth?: number
+    previewUrl?: string
     reviewMessage?: string
     reviewStatus?: number
     reviewTime?: string
@@ -385,7 +306,6 @@ declare namespace API {
     id?: number
     introduction?: string
     name?: string
-    nullSpaceId?: boolean
     pageSize?: number
     picFormat?: string
     picHeight?: number
@@ -413,7 +333,14 @@ declare namespace API {
 
   type PictureTagCategory = {
     categoryList?: string[]
+    categoryMap?: Record<string, any>
     tagList?: string[]
+    tagMap?: Record<string, any>
+  }
+
+  type PictureUpdateByAIRequest = {
+    description?: string
+    id?: number
   }
 
   type PictureUpdateRequest = {
@@ -426,8 +353,11 @@ declare namespace API {
 
   type PictureUploadByBatchRequest = {
     count?: number
+    highQualityOnly?: boolean
+    minImageSize?: number
     namePrefix?: string
     searchText?: string
+    tryOriginalSize?: boolean
   }
 
   type PictureUploadRequest = {
@@ -444,13 +374,13 @@ declare namespace API {
     id?: number
     introduction?: string
     name?: string
-    permissionList?: string[]
     picColor?: string
     picFormat?: string
     picHeight?: number
     picScale?: number
     picSize?: number
     picWidth?: number
+    previewUrl?: string
     spaceId?: number
     tags?: string[]
     thumbnailUrl?: string
@@ -463,10 +393,6 @@ declare namespace API {
   type SearchPictureByColorRequest = {
     picColor?: string
     spaceId?: number
-  }
-
-  type SearchPictureByPictureRequest = {
-    pictureId?: number
   }
 
   type Space = {
@@ -633,7 +559,6 @@ declare namespace API {
     id?: number
     maxCount?: number
     maxSize?: number
-    permissionList?: string[]
     spaceLevel?: number
     spaceName?: string
     spaceType?: number
@@ -644,18 +569,7 @@ declare namespace API {
     userId?: number
   }
 
-  type TaskMetrics = {
-    failed?: number
-    succeeded?: number
-    total?: number
-  }
-
-  type testDownloadFileUsingGetParams = {
-    /** filepath */
-    filepath?: string
-  }
-
-  type uploadPictureUsingPostParams = {
+  type uploadPictureUsingPOSTParams = {
     fileUrl?: string
     id?: number
     picName?: string
@@ -674,9 +588,6 @@ declare namespace API {
     userPassword?: string
     userProfile?: string
     userRole?: string
-    vipCode?: string
-    vipExpireTime?: string
-    vipNumber?: number
   }
 
   type UserAddRequest = {
@@ -688,8 +599,22 @@ declare namespace API {
   }
 
   type UserLoginRequest = {
+    /** 账号 */
     userAccount?: string
+    /** 密码 */
     userPassword?: string
+  }
+
+  type UserLoginVo = {
+    createTime?: string
+    editTime?: string
+    id?: number
+    updateTime?: string
+    userAccount?: string
+    userAvatar?: string
+    userName?: string
+    userProfile?: string
+    userRole?: string
   }
 
   type UserQueryRequest = {
@@ -726,12 +651,5 @@ declare namespace API {
     userName?: string
     userProfile?: string
     userRole?: string
-    vipCode?: string
-    vipExpireTime?: string
-    vipNumber?: number
-  }
-
-  type VipExchangeRequest = {
-    vipCode?: string
   }
 }

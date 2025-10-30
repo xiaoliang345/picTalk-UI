@@ -114,11 +114,16 @@ watch(() => props.pictures, (newValue) => {
 }
 
 .overlay-desc {
-    font-size: 12px;
+    font-size: 13px;
     line-height: 1.4;
     word-wrap: break-word;
     /* 长单词也换行 */
     white-space: normal;
+    //最多显示五行
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 5;
+    overflow: hidden;
 }
 
 :deep(.ant-list-item) {

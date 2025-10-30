@@ -4,7 +4,7 @@
             <!-- 左侧：图片区域 -->
             <a-col :xs="24" :sm="24" :md="14" :lg="14" :xl="14" class="image-wrapper">
                 <div class="image-container">
-                    <a-image :src="picture?.previewUrl" class="preview-img">
+                    <a-image lazy :src="picture?.previewUrl" class="preview-img">
                         <template #placeholder>
                             <a-image :src="picture?.previewUrl" :preview="false" />
                         </template>
@@ -53,8 +53,7 @@
                     <div class="prompt-section">
                         <h4>图片介绍</h4>
                         <div class="introduction">{{ picture.introduction != null ? picture.introduction : "暂无图片介绍"
-                            }}</div>
-                        <!-- <pre class="prompt-text">{{ picture.introduction != null ? picture.introduction : "暂无图片介绍" }}</pre> -->
+                        }}</div>
                     </div>
                 </div>
 
@@ -286,6 +285,7 @@ watch(() => props.picture, (newValue) => {
     .introduction {
         font-size: 14px;
         color: #58595a;
+
     }
 }
 
