@@ -1,3 +1,63 @@
 :root {
   --mobile-form-width: 300px;
+  --comment-indent: 20px;
+}
+
+.comment-node {
+  margin-left: calc(var(--comment-indent) * var(--level, 0));
+}
+
+.ant-form-item {
+  :deep(.ant-row) {
+    flex-wrap: nowrap !important;
+  }
+}
+
+@media (max-width: 575px) {
+  .ant-form .ant-form-item .ant-form-item-label,
+  .ant-form .ant-form-item .ant-form-item-control {
+    flex: auto !important;
+  }
+}
+
+@media (max-width: 575px) {
+  .ant-form-item .ant-form-item-label > label {
+    margin: 0 5px;
+  }
+}
+
+.ant-form-inline .ant-form-item {
+  margin: 5px;
+}
+
+.ant-menu-light.ant-menu-horizontal > .ant-menu-item-selected,
+.ant-menu-light.ant-menu-horizontal > .ant-menu-submenu-selected {
+  display: flex;
+  align-items: center;
+}
+
+.ant-menu-light.ant-menu-horizontal > .ant-menu-item,
+.ant-menu-light.ant-menu-horizontal > .ant-menu-submenu {
+  display: flex;
+  align-items: center;
+}
+
+.ant-tabs .ant-tabs-tab + .ant-tabs-tab {
+  margin: 0 0 0 24px;
+}
+
+.ant-table-tbody > tr {
+  max-height: 60px;
+}
+
+.el-popup-parent--hidden {
+  width: calc(100% - 0px) !important;
+}
+
+:root {
+  --comment-indent: 20px;
+}
+
+.comment-node {
+  margin-left: calc(var(--comment-indent) * var(--level, 0));
 }

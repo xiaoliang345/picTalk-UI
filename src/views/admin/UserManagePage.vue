@@ -60,6 +60,7 @@
         </a-form-item>
       </a-form>
     </a-modal>
+
   </div>
 </template>
 <script lang="ts" setup>
@@ -189,6 +190,8 @@ function handleUpdate(user: API.UserVO) {
   userForm.value.userName = user.userName
   userForm.value.userProfile = user.userProfile
   userForm.value.userRole = user.userRole
+  userForm.value.userAvatar = user.userAvatar
+
 }
 
 // 删除用户

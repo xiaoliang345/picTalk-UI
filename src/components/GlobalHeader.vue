@@ -5,11 +5,11 @@
         <router-link to="/">
           <div class="title-bar">
             <img v-if="!publicStore.isMobile" src="@/assets/logo.png" alt="logo" />
-            <div class="title">图语空间</div>
+            <div class="title">PicTalk</div>
           </div>
         </router-link>
       </a-col>
-      <a-col flex="auto" :style="{ marginLeft: publicStore.isMobile ? '0px' : '40px' }">
+      <a-col flex="auto" :style="{ marginLeft: publicStore.isMobile ? '0px' : '60px' }">
         <a-menu v-model:selectedKeys="current" @click="doMenuClick" mode="horizontal" :items="items" />
       </a-col>
       <a-col>
@@ -21,10 +21,14 @@
                 {{ userStore.user.userName }}
               </a-space>
               <template #overlay>
-                <a-menu>
+                <a-menu style="min-width: 105px;">
                   <a-menu-item @click="goToUserInfo">
                     <SmileOutlined />
                     个人信息
+                  </a-menu-item>
+                  <a-menu-item @click="goToAbout">
+                    <InfoCircleOutlined />
+                    关于项目
                   </a-menu-item>
                   <a-menu-item @click="handleLoginOut">
                     <LoginOutlined />
@@ -53,6 +57,7 @@ import {
   UsergroupAddOutlined,
   PictureOutlined,
   AppstoreOutlined,
+  InfoCircleOutlined,
 } from '@ant-design/icons-vue'
 //@ts-ignore
 import { MenuProps, message } from 'ant-design-vue'
@@ -88,6 +93,15 @@ const originItems = ref<MenuProps['items']>([
     title: '创建图片',
   },
   {
+    key: '/forum',
+    icon: () => h(Icon, {
+      icon: "fluent-color:people-chat-20",
+      width: 22
+    }),
+    label: '论坛',
+    title: '论坛',
+  },
+  {
     key: '/admin/manage',
     icon: () => h(UsergroupAddOutlined),
     label: '用户管理',
@@ -106,18 +120,12 @@ const originItems = ref<MenuProps['items']>([
 
     title: '空间管理',
   }
-  /* {
-     key: '/user/messageBoard',
-     icon: () => h(AliwangwangOutlined),
-     label: '给我留言',
-     title: '给我留言',
-   },*/
 ])
 
 //根据角色显示菜单
 let items = computed(() => {
   return originItems.value?.filter((item) => {
-    if (item?.key?.includes('admin')) {
+    if (typeof item?.key === 'string' && item.key.includes('admin')) {
       return userStore.user.userRole == 'admin'
     }
     return true
@@ -140,7 +148,7 @@ async function handleLoginOut() {
 }
 
 // 路由跳转事件
-function doMenuClick({ key }) {
+function doMenuClick({ key }: { key: string }) {
   router.push(key)
 }
 
@@ -148,6 +156,12 @@ function doMenuClick({ key }) {
 function goToUserInfo() {
   current.value[0] = ''
   router.push('/user/info')
+}
+
+// 关于项目
+function goToAbout() {
+  current.value[0] = ''
+  router.push('/about')
 }
 
 //监听路由变化激活对应菜单
@@ -164,7 +178,7 @@ watch(
 <style scoped>
 .user-login {
   display: flex;
-  padding: 0 5px;
+  padding: 0 10px;
 
   .avatar {
     margin: 0 5px 2px 0;
@@ -182,10 +196,15 @@ watch(
   }
 
   .title {
+    width: 70px;
     margin-left: 10px;
     font-size: 18px;
     color: black;
   }
+}
+
+:deep(.ant-menu-horizontal) {
+  border: none !important;
 }
 
 @media (max-width: 500px) {

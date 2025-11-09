@@ -29,12 +29,12 @@ const router = createRouter({
         {
           path: '/add_picture',
           name: '创建图片',
-          component: () => import('@/views/AddPicturePage.vue'),
+          component: () => import('@/views/picture/AddPicturePage.vue'),
         },
         {
           path: '/add_pictures',
           name: '批量创建图片',
-          component: () => import('@/components/AddPictureBatchPage.vue'),
+          component: () => import('@/views/picture/components/AddPictureBatch.vue'),
         },
         {
           path: '/user/info',
@@ -44,7 +44,7 @@ const router = createRouter({
         {
           path: '/picture/detail',
           name: '图片详情',
-          component: () => import('@/views/PictureDetail.vue'),
+          component: () => import('@/views/picture/PictureDetail.vue'),
         },
         {
           path: '/admin/spaceManage',
@@ -54,32 +54,42 @@ const router = createRouter({
         {
           path: '/user/mySpace',
           name: '我的空间',
-          component: () => import('@/views/MySpace.vue'),
+          component: () => import('@/views/space/MySpace.vue'),
         },
         {
           path: '/user/teamSpace',
           name: '团队空间',
-          component: () => import('@/views/TeamSpace.vue'),
+          component: () => import('@/views/space/TeamSpace.vue'),
         },
         {
           path: '/user/spaceAnalyse',
           name: '空间分析',
-          component: () => import('@/views/SpaceAnalyse.vue'),
+          component: () => import('@/views/space/SpaceAnalyse.vue'),
         },
         {
           path: '/user/addSpace',
           name: '添加空间',
-          component: () => import('@/components/AddSpace.vue'),
+          component: () => import('@/views/space/components/AddSpace.vue'),
         },
         {
           path: '/user/spaceUserManage',
           name: '空间用户管理',
-          component: () => import('@/views/SpaceUserManage.vue'),
+          component: () => import('@/views/space/SpaceUserManage.vue'),
         },
         {
-          path: '/user/messageBoard',
-          name: '给我留言',
-          component: () => import('@/views/MessageBoard.vue'),
+          path: '/about',
+          name: '关于项目',
+          component: () => import('@/views/About.vue'),
+        },
+        {
+          path: '/forum',
+          name: '社区',
+          component: () => import('@/views/forum/PostListPage.vue'),
+        },
+        {
+          path: '/forum/post/:id',
+          name: '帖子详情',
+          component: () => import('@/views/forum/PostDetailPage.vue'),
         },
       ],
     },
@@ -109,7 +119,7 @@ const router = createRouter({
     return
   }
 })*/
-router.afterEach((to, from, next) => {
+router.afterEach((to) => {
   const publicStore = usePublicStore()
   if (publicStore.isMobile) {
     publicStore.isFold = true

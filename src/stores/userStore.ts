@@ -1,11 +1,11 @@
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
 import { getLoginUserUsingGet } from '@/api/userController.ts'
-import { getSpaceVoByIdUsingGet, listSpaceVoByPageUsingPost } from '@/api/spaceController.ts'
+import { listSpaceVoByPageUsingPost } from '@/api/spaceController.ts'
 import { getSpaceUserUsingPost, listMyTeamSpaceUsingPost } from '@/api/spaceUserController.ts'
 
 export const useUserStore = defineStore('user', () => {
-  const user = ref<API.LoginUserVO>({
+  const user = ref<API.UserLoginVo>({
     userName: '未登录',
   })
 

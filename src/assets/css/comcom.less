@@ -4,44 +4,18 @@
   }
 }
 
-@media (max-width: 575px) {
-  :where(.css-dev-only-do-not-override-1p3hq3p).ant-form .ant-form-item .ant-form-item-label,
-  :where(.css-dev-only-do-not-override-1p3hq3p).ant-form .ant-form-item .ant-form-item-control {
-    flex: auto !important;
-  }
+.ant-table-tbody > tr {
+  max-height: 60px;
 }
 
-@media (max-width: 575px) {
-  :where(.css-dev-only-do-not-override-1p3hq3p).ant-form-item .ant-form-item-label > label {
-    margin: 0 5px;
-  }
+.el-popup-parent--hidden {
+  width: calc(100% - 0px) !important;
 }
 
-:where(.css-dev-only-do-not-override-1p3hq3p).ant-form-inline .ant-form-item {
-  margin: 5px;
+:root {
+  --comment-indent: 20px;
 }
 
-:where(
-    .css-dev-only-do-not-override-1p3hq3p,
-    css-dev-only-do-not-override-1p3hq3p
-  ).ant-menu-light.ant-menu-horizontal
-  > .ant-menu-item-selected,
-:where(
-    .css-dev-only-do-not-override-1p3hq3p,
-    css-dev-only-do-not-override-1p3hq3p
-  ).ant-menu-light.ant-menu-horizontal
-  > .ant-menu-submenu-selected {
-  display: flex;
-  align-items: center;
-}
-
-:where(.css-dev-only-do-not-override-1p3hq3p).ant-menu-light.ant-menu-horizontal > .ant-menu-item,
-:where(.css-dev-only-do-not-override-1p3hq3p).ant-menu-light.ant-menu-horizontal
-  > .ant-menu-submenu {
-  display: flex;
-  align-items: center;
-}
-
-:where(.css-dev-only-do-not-override-1p3hq3p).ant-tabs .ant-tabs-tab + .ant-tabs-tab {
-  margin: 0 0 0 24px;
+.comment-node {
+  margin-left: calc(var(--comment-indent) * var(--level, 0));
 }

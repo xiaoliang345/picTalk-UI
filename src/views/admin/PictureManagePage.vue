@@ -40,6 +40,11 @@
         <template v-else-if="column.dataIndex === 'user'">
           {{ record.userId }}
         </template>
+        <template v-else-if="column.dataIndex === 'introduction'">
+          <div class="introduction">
+            {{ record.introduction }}
+          </div>
+        </template>
         <template v-else-if="column.dataIndex === 'pictureInfo'">
           格式：{{ record.picFormat }} 高度：{{ record.picHeight }}<br />
           宽度：{{ record.picWidth }} 宽高比：{{ record.picScale }}<br />
@@ -136,7 +141,7 @@ const columns = [
     title: '简介',
     dataIndex: 'introduction',
     align: 'center',
-    width: 150
+    width: 170
   },
   {
     title: '类型',
@@ -357,7 +362,22 @@ onMounted(() => {
     right: 30px;
   }
 
-
+  .introduction {
+    text-align: left;
+    color: #58595a;
+    height: 100px;
+    /* 假设每行高度为15px, 则共75px */
+    overflow-y: auto;
+    /* 当内容超出容器高度时，显示垂直滚动条 */
+    display: block;
+    /* 确保元素以块级元素显示 */
+    white-space: pre-wrap;
+    /* 保持空白符序列，但正常地进行换行 */
+    word-wrap: break-word;
+    /* 在长单词或URL周围断字 */
+    line-height: 1.5;
+    /* 行高设置，根据实际字体大小调整 */
+  }
 }
 
 @media screen and (max-width: 500px) {

@@ -1,7 +1,7 @@
 <template>
   <div id="userLoginPage">
     <div class="loginForm">
-      <h2 class="title">图语空间-用户登录</h2>
+      <h2 class="title">PicTalk-用户登录</h2>
       <div class="desc">AI协同云库</div>
       <a-form :model="formState" name="basic" autocomplete="off" @finish="handleSubmit">
         <a-form-item name="userAccount" :rules="[{ required: true, message: '请输入账号' }]">
@@ -116,7 +116,7 @@ const handleSubmit = async (values: API.UserLoginRequest) => {
 
 @media screen and (max-width: 500px) {
   #userLoginPage {
-    background: url("@/assets/移动端bg.png") no-repeat center center;
+    background: url("@/assets/移动端bg.jpeg") no-repeat center center;
     background-size: 100% 100%;
 
     .bg-video {

@@ -79,9 +79,6 @@ onMounted(async () => {
 @media screen and (max-width: 500px) {
   .menu {
     margin-top: 0px;
-    border-top-right-radius: 5px !important;
-    border-bottom-right-radius: 5px !important;
-    background-color: #f5f5f5;
   }
 }
 </style>

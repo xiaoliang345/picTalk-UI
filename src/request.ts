@@ -5,7 +5,7 @@ import { usePublicStore } from './stores/publicStore'
 
 // 区分开发和生产环境
 const DEV_BASE_URL = 'http://localhost:8123'
-const PROD_BASE_URL = 'http://www.oxncloud.cn'
+const PROD_BASE_URL = 'http://113.44.60.157'
 // 创建 Axios 实例
 const request = axios.create({
   baseURL: DEV_BASE_URL,
@@ -33,12 +33,14 @@ request.interceptors.response.use((response) => {
   const res = response.data
   // 如果是返回的文件
   const publicStore = usePublicStore()
-  console.log(publicStore.path)
+  // console.log(publicStore.path)
 
-  if (res.code == 401 && !publicStore.path.includes('/picture/detail')) {
+  if (res.code == 401) {
     if (
       !response.request.responseURL.includes('/user/get/login') &&
-      !window.location.pathname.includes('/user/login')
+      !window.location.pathname.includes('/user/login') &&
+      !publicStore.path.includes('/picture/detail')
+      // !publicStore.path.includes('/forum')
     ) {
       message.warn('请先登录')
       router.push({

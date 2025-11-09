@@ -14,9 +14,9 @@ export default class PictureEditWebSocket {
    */
   connect() {
     // 区分开发和生产环境
-    const DEV_BASE_URL = 'localhost:8123'
-    const PROD_BASE_URL = 'www.oxncloud.cn'
-    const url = `ws://${DEV_BASE_URL}/api/ws/picture/edit?pictureId=${
+    const DEV_BASE_URL = '192.168.195.168:8123'
+    const PROD_BASE_URL = '113.44.60.157:8123'
+    const url = `ws://${PROD_BASE_URL}/api/ws/picture/edit?pictureId=${
       //
       this.pictureId
     }`

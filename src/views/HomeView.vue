@@ -3,12 +3,12 @@
     <div class="search-container">
       <a-form class="search" layout="inline" :model="searchForm">
         <a-form-item>
-          <a-input allow-clear v-model:value="searchForm.searchText" placeholder="输入图片名称或简介" />
+          <a-input style="max-width: 200px;" allow-clear v-model:value="searchForm.searchText"
+            placeholder="输入图片名称或简介" />
         </a-form-item>
         <a-form-item>
           <a-space>
             <a-button @click="handleSearch" type="primary">搜索</a-button>
-            <!-- <a-button @click="handleReset">重置</a-button> -->
           </a-space>
         </a-form-item>
       </a-form>
@@ -28,8 +28,6 @@
       </div>
       <div class="tags">
         <a-space :size="[0, 8]" wrap>
-          <!-- <span style="margin-right: 8px">标签：</span> -->
-
           <a-checkable-tag style="margin: 0px 10px;" v-for="(tag, index) in tagMap" :key="tag"
             v-model:checked="selectTags[index]" @change="handleSelect(index)">
             {{ tag.label }}
@@ -40,10 +38,12 @@
     <!-- 图片列表 -->
     <PictureCardList :pictures="data" @getPictureInfo="getPictureInfo" />
 
-    <a-modal v-model:open="modelOpen" width="70%" :footer="null" :closable="false">
-      <!-- 图片详情详情 -->
+    <el-dialog v-model="modelOpen" :show-close="false" :width="publicStore.isMobile ? '80%' : '60%'"
+      style="border-radius: 8px;padding:0px">
+      <template #header="{ close, titleId, titleClass }">
+      </template>
       <ImagePreview :picture="pictureInfo" @handleDeleteSuccess="handleDeleteSuccess" />
-    </a-modal>
+    </el-dialog>
 
     <pagination :page-size-options="pageSizeOptions" :total="total" @handlePageChange="handlePageChange"
       :searchForm="searchForm" />
@@ -57,10 +57,8 @@ import {
 } from '@/api/pictureController.ts'
 import Pagination from '@/components/Pagination.vue'
 import { usePublicStore } from '@/stores/publicStore.ts'
-
-import ImagePreview from '@/components/ImageInfo.vue'
-import PictureCardList from '@/components/PictureCardList.vue'
-import '@/assets/css/modal.less'
+import ImagePreview from "./picture/components/ImageInfo.vue"
+import PictureCardList from "./picture/components/PictureCardList.vue"
 
 const publicStore = usePublicStore();
 const data = ref<API.PictureVO[]>([])
@@ -139,12 +137,8 @@ onMounted(async () => {
   categoryMap.value = publicStore.categoryMap;
   selectTags.value = new Array(tagMap.value.length).fill(false);
 })
-
 </script>
-
 <style scoped lang="less">
-@import '@/assets/css/modal.less';
-
 #homeView {
   padding-bottom: 30px;
 
@@ -152,9 +146,17 @@ onMounted(async () => {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    // margin-bottom: 20px;
     flex-direction: column;
   }
+
+  :deep(.el-dialog__header) {
+    padding: 0px !important;
+  }
+
+  :deep(.el-overlay) {
+    z-index: 10 !important;
+  }
+
 }
 
 :deep(.ant-space) {

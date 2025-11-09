@@ -1,4 +1,11 @@
 declare namespace API {
+  type AddCommentDTO = {
+    content?: string
+    parentId?: number
+    postId?: number
+    replyToUserId?: number
+  }
+
   type AiImageTaskResult = {
     createTime?: number
     description?: string
@@ -21,9 +28,21 @@ declare namespace API {
     message?: string
   }
 
+  type BaseResponseComment_ = {
+    code?: number
+    data?: Comment
+    message?: string
+  }
+
   type BaseResponseInt_ = {
     code?: number
     data?: number
+    message?: string
+  }
+
+  type BaseResponseIPagePostVO_ = {
+    code?: number
+    data?: IPagePostVO_
     message?: string
   }
 
@@ -81,6 +100,12 @@ declare namespace API {
     message?: string
   }
 
+  type BaseResponseMapStringString_ = {
+    code?: number
+    data?: Record<string, any>
+    message?: string
+  }
+
   type BaseResponsePagePicture_ = {
     code?: number
     data?: PagePicture_
@@ -126,6 +151,12 @@ declare namespace API {
   type BaseResponsePictureVO_ = {
     code?: number
     data?: PictureVO
+    message?: string
+  }
+
+  type BaseResponsePostVO_ = {
+    code?: number
+    data?: PostVO
     message?: string
   }
 
@@ -177,6 +208,41 @@ declare namespace API {
     message?: string
   }
 
+  type Comment = {
+    children?: Comment[]
+    content?: string
+    createTime?: string
+    id?: number
+    likeCount?: number
+    parentId?: number
+    postId?: number
+    replyToUserId?: number
+    replyToUsername?: string
+    userId?: number
+    username?: string
+  }
+
+  type CommentVO = {
+    children?: CommentVO[]
+    content?: string
+    createTime?: string
+    id?: number
+    likeCount?: number
+    parentId?: number
+    postId?: number
+    replyToUserId?: number
+    replyToUsername?: string
+    userAvatar?: string
+    userId?: number
+    username?: string
+  }
+
+  type CreatePostDTO = {
+    content?: string
+    imageUrls?: MapStringString_[]
+    title?: string
+  }
+
   type DeleteRequest = {
     id?: number
   }
@@ -194,6 +260,11 @@ declare namespace API {
   type getPictureVOByIdUsingGETParams = {
     /** id */
     id?: number
+  }
+
+  type getPostUsingGETParams = {
+    /** id */
+    id: number
   }
 
   type getSpaceByIdUsingGETParams = {
@@ -215,6 +286,38 @@ declare namespace API {
     /** id */
     id?: number
   }
+
+  type IPagePostVO_ = {
+    current?: number
+    pages?: number
+    records?: PostVO[]
+    size?: number
+    total?: number
+  }
+
+  type likePostUsingPOSTParams = {
+    /** id */
+    id: number
+  }
+
+  type listPostsByPageUsingGETParams = {
+    current?: number
+    pageSize?: number
+    sortField?: string
+    sortOrder?: string
+  }
+
+  type MapStringString_ = true
+
+  type MapStringString_1 = true
+
+  type MapStringString_2 = true
+
+  type MapStringString_3 = true
+
+  type MapStringString_4 = true
+
+  type MapStringString_5 = true
 
   type PagePicture_ = {
     current?: number
@@ -374,6 +477,7 @@ declare namespace API {
     id?: number
     introduction?: string
     name?: string
+    permissionList?: string[]
     picColor?: string
     picFormat?: string
     picHeight?: number
@@ -388,6 +492,20 @@ declare namespace API {
     url?: string
     user?: UserVO
     userId?: number
+  }
+
+  type PostVO = {
+    comments?: CommentVO[]
+    content?: string
+    createTime?: string
+    id?: number
+    imageUrls?: MapStringString_[]
+    likeCount?: number
+    title?: string
+    updateTime?: string
+    userAvatar?: string
+    userId?: number
+    userName?: string
   }
 
   type SearchPictureByColorRequest = {
@@ -532,7 +650,9 @@ declare namespace API {
 
   type SpaceUserEditRequest = {
     id?: number
+    spaceId?: number
     spaceRole?: string
+    userId?: number
   }
 
   type SpaceUserQueryRequest = {
@@ -559,6 +679,7 @@ declare namespace API {
     id?: number
     maxCount?: number
     maxSize?: number
+    permissionList?: string[]
     spaceLevel?: number
     spaceName?: string
     spaceType?: number
@@ -569,11 +690,23 @@ declare namespace API {
     userId?: number
   }
 
-  type uploadPictureUsingPOSTParams = {
+  type UpdatePostDTO = {
+    content?: string
+    id?: number
+    imageUrls?: MapStringString_[]
+    title?: string
+  }
+
+  type uploadPictureUsingPOST1Params = {
     fileUrl?: string
     id?: number
     picName?: string
     spaceId?: number
+  }
+
+  type uploadPictureUsingPOSTParams = {
+    /** postId */
+    postId?: number
   }
 
   type User = {

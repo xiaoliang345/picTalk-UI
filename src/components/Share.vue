@@ -1,5 +1,7 @@
 <template>
-  <a-modal class="share-modal" v-model:open="shareIsShow" :footer="null" @cancel="handleCancel">
+  <el-dialog class="share-modal" v-model="shareIsShow" style="border-radius: 8px;padding:0px" width="350px">
+    <template #header="{ close, titleId, titleClass }">
+    </template>
     <a-card title="图片分享" :bordered="false" class="share-card">
       <div class="share-container">
         <!-- 分享信息区域 -->
@@ -25,7 +27,8 @@
         </div>
       </div>
     </a-card>
-  </a-modal>
+  </el-dialog>
+
 </template>
 
 <script setup>
@@ -142,9 +145,7 @@ watch(() => props.shareLink, (newValue) => {
   padding: 0px !important;
 }
 
-:where(.css-dev-only-do-not-override-1p3hq3p).ant-modal .ant-modal-content {
-  padding: 0px !important;
-}
+
 
 @media (min-width: 768px) {
   .share-container {
