@@ -12,7 +12,7 @@
           <EmojiPicker v-model:open="emojiPickerVisible" placement="bottomLeft" @select="addEmoji" />
         </div>
       </a-form-item>
-      <a-form-item label="图片链接（可选）">
+      <a-form-item label="图片链接（可选,最多4张）">
         <PicturesUpload v-model:pictureMaps="pictureMaps" :postId="postId" @success="handleSuccess" />
       </a-form-item>
     </a-form>

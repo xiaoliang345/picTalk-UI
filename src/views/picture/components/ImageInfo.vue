@@ -80,7 +80,7 @@
 import { TAG_COLOR_MAP } from '@/constant/index.ts'
 import { DownloadOutlined, DeleteFilled, EditFilled, ShareAltOutlined } from '@ant-design/icons-vue'
 // 获取图片信息
-import { deletePictureUsingPost, getPictureVoByIdUsingGet } from '@/api/pictureController.ts'
+import { deletePictureUsingPost } from '@/api/pictureController.ts'
 import router from '@/router'
 import { message } from 'ant-design-vue'
 import { downloadImage } from '@/utils'
@@ -98,7 +98,6 @@ const props = defineProps({
 const emit = defineEmits(['handleDeleteSuccess'])
 
 const picture = ref<API.PictureVO>(props.picture)
-const userStore = useUserStore()
 const shareLink = ref('') //二维码链接
 let shareIsShow = ref(false) //是否显示二维码
 
@@ -106,7 +105,9 @@ let shareIsShow = ref(false) //是否显示二维码
 // 分享
 function handleShare(id: number) {
   shareIsShow.value = true
-  shareLink.value = `http://localhost:5173/picture/detail?id=${id}`
+  shareLink.value = `http://www.oxncloud.top/picture/detail?id=${id}`
+  // shareLink.value = `http://localhost:5173/picture/detail?id=${id}`
+
 }
 
 // 删除图片
@@ -116,7 +117,7 @@ async function handleDelete() {
     message.success('删除成功')
     emit('handleDeleteSuccess')
   } else {
-    message.error('删除失败')
+    message.error(res.data.message)
   }
 }
 
@@ -126,6 +127,7 @@ function handleUpdate() {
     path: '/add_picture',
     query: {
       id: picture.value?.id,
+      spaceId: picture.value?.spaceId,
     },
   })
 }
@@ -253,6 +255,10 @@ watch(() => props.picture, (newValue) => {
   }
 
 
+}
+
+:deep(.el-dialog__header) {
+  padding: 0px !important;
 }
 
 :deep(.ant-divider-horizontal) {

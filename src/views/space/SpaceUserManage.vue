@@ -19,8 +19,8 @@
         </template>
         <template v-if="column.dataIndex == 'userRole'">
           <!-- 房主不显示切换角色-->
-          <a-select v-if="record.userId != record.space?.userId" v-model:value="record.spaceRole" style="width: 120px"
-            @change="handleRoleChange(record)">
+          <span v-if="record.userId == record.space?.userId">master</span>
+          <a-select v-else v-model:value="record.spaceRole" style="width: 120px" @change="handleRoleChange(record)">
             <a-select-option :value="role.value" v-for="(role, index) in SPACE_USER_ROLE_OPTIONS" :key="index">{{
               role.label }}
             </a-select-option>

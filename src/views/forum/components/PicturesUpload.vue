@@ -3,8 +3,8 @@
     <div class="uploaded-list">
 
       <!-- 上传区域 -->
-      <a-upload :disabled="loading" list-type="picture-card" :show-upload-list="false" :before-upload="beforeUpload"
-        :custom-request="handleChange" v-model:file-list="uploadedPictures" :max-count="4">
+      <a-upload :disabled="loading || pictureMaps.length >= 4" list-type="picture-card" :show-upload-list="false"
+        :before-upload="beforeUpload" :custom-request="handleChange" v-model:file-list="uploadedPictures">
         <div>
           <loading-outlined v-if="loading"></loading-outlined>
           <plus-outlined v-else></plus-outlined>
@@ -22,7 +22,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, watch } from 'vue'
+import { ref } from 'vue'
 import { PlusOutlined, LoadingOutlined, CloseCircleOutlined } from '@ant-design/icons-vue'
 import { message } from 'ant-design-vue'
 import type { UploadProps } from 'ant-design-vue'
@@ -47,7 +47,6 @@ const uploadedPictures = ref<UploadProps['fileList']>()
 // 移除某张图片
 const removePicture = (index: number) => {
   pictureMaps.value.splice(index, 1)
-  console.log(pictureMaps.value);
 }
 
 // 上传前校验（单个文件）
@@ -68,14 +67,17 @@ const beforeUpload = (file: any) => {
 
 // 自定义上传逻辑（处理多文件）
 const handleChange = async ({ file }: any) => {
+  // 检查是否已达到最大上传数量（2张图片）
+  if (pictureMaps.value.length >= 4) {
+    message.warning('最多只能上传4张图片')
+    return
+  }
 
   // 从 fileList 中提取所有待上传的文件（过滤掉已上传的）
   loading.value = true
 
   try {
     const res = await uploadPictureUsingPost({ postId: props.postId }, {}, file)
-    console.log(res);
-
     if (res.data.code == 200) {
       message.success('上传成功')
       loading.value = false
@@ -86,9 +88,11 @@ const handleChange = async ({ file }: any) => {
 
     } else {
       message.error('图片上传失败' + res.data.message)
+      loading.value = false
     }
   } catch (e) {
-    // message.error('图片上传失败' + e.message)
+    message.error('图片上传失败')
+    loading.value = false
   }
 }
 </script>

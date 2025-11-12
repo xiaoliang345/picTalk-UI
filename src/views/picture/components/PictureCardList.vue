@@ -67,7 +67,7 @@ watch(() => props.pictures, (newValue) => {
 </script>
 <style scoped lang="less">
 #PictureCardList {
-  margin-top: 10px;
+  margin-top: 15px;
 }
 
 .img-card {

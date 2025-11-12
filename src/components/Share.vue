@@ -5,10 +5,8 @@
     <a-card title="图片分享" :bordered="false" class="share-card">
       <div class="share-container">
         <!-- 分享信息区域 -->
-        <div class="share-info">
+        <!-- <div class="share-info">
           <a-divider orientation="left">分享链接</a-divider>
-
-          <!-- 链接输入框 -->
           <a-input-group compact class="link-input-group">
             <a-input v-model:value="shareLink" style="width: 80%;margin: auto" disabled />
             <a-button type="primary" @click="copyLink" :loading="copyLoading">
@@ -17,12 +15,12 @@
               </template>
             </a-button>
           </a-input-group>
-        </div>
+        </div> -->
 
         <!-- 图片预览区域 -->
         <div class="image-preview">
           <!-- 二维码区域 -->
-          <a-divider orientation="left">手机扫码查看</a-divider>
+          <!-- <a-divider orientation="left">扫码查看</a-divider> -->
           <a-qrcode class="shared-image" :value="shareLink" />
         </div>
       </div>
@@ -52,22 +50,11 @@ function handleCancel() {
   shareIsShow.value = false;
 }
 // 复制链接功能
-const copyLink = () => {
-  copyLoading.value = true
-  navigator.clipboard
-    .writeText(props.shareLink)
-    .then(() => {
-      message.success('链接已复制到剪贴板')
-    })
-    .catch(() => {
-      message.error('复制失败，请手动复制')
-    })
-    .finally(() => {
-      copyLoading.value = false
-    })
+const copyLink = async () => {
+  await navigator.clipboard.writeText(props.shareLink)
+  message.success('链接已复制！')
 }
 watch(() => props.shareLink, (newValue) => {
-  console.log("hh" + newValue);
   shareLink.value = newValue;
 }, { immediate: true })
 </script>
@@ -93,11 +80,14 @@ watch(() => props.shareLink, (newValue) => {
       flex-wrap: wrap;
     }
   }
+
+
 }
 
 .image-preview {
   width: 100%;
   display: flex;
+  margin: 20px 0px;
   justify-content: center;
   align-items: center;
   flex-wrap: wrap;
@@ -105,6 +95,7 @@ watch(() => props.shareLink, (newValue) => {
 }
 
 .shared-image {
+
   max-width: 100%;
   max-height: 400px;
   object-fit: contain;

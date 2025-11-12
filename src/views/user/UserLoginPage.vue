@@ -20,8 +20,8 @@
         </div>
       </a-form>
     </div>
-    <video autoplay muted loop playsinline class="bg-video"
-      src="https://ys.mihoyo.com/main/_nuxt/videos/bg.3e78e80.mp4"></video>
+    <video v-if="!publicStore.isMobile" autoplay muted loop playsinline class="bg-video"
+      src="@/assets/bgYS.mp4"></video>
   </div>
 </template>
 <script lang="ts" setup>

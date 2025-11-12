@@ -22,26 +22,27 @@
       </a-button>
     </div>
 
-    <a-form v-if="pictureForm.id" class="pictureForm" layout="inline" :model="pictureForm">
+    <a-form v-if="pictureForm.id" class="pictureForm" layout="inline" :model="pictureForm"
+      :label-col="{ style: { width: '50px' } }">
       <a-form-item label="名称">
-        <a-input :style="{ width: publicStore.isMobile ? '180px' : '100%' }" v-model:value="pictureForm.name"
+        <a-input :style="{ width: publicStore.isMobile ? '220px' : '100%' }" v-model:value="pictureForm.name"
           placeholder="输入图片名称" />
       </a-form-item>
       <a-form-item label="简介">
-        <a-textarea :style="{ width: publicStore.isMobile ? '180px' : '100%' }" v-model:value="pictureForm.introduction"
+        <a-textarea :style="{ width: publicStore.isMobile ? '220px' : '100%' }" v-model:value="pictureForm.introduction"
           placeholder="输入图片简介" :auto-size="{ minRows: 2, maxRows: 5 }" />
       </a-form-item>
       <a-form-item label="分类">
-        <a-select style="min-width: 180px;" v-model:value="pictureForm.category" :options="categoryMap"
-          placeholder="输入图片分类" />
+        <a-select :style="{ width: publicStore.isMobile ? '220px' : '100%' }" v-model:value="pictureForm.category"
+          :options="categoryMap" placeholder="输入图片分类" />
       </a-form-item>
       <a-form-item label="标签">
-        <a-select style="min-width: 180px;" mode="multiple" v-model:value="pictureForm.tags" :options="tagMap"
-          placeholder="输入图片标签" :show-search="false" />
+        <a-select :style="{ width: publicStore.isMobile ? '220px' : '100%' }" mode="multiple"
+          v-model:value="pictureForm.tags" :options="tagMap" placeholder="输入图片标签" :show-search="false" />
       </a-form-item>
       <a-form-item style="text-align: right;">
         <a-space>
-          <a-button :loading="loading" @click="handleAdd" type="primary">{{ route.query.id ? '修改' : '创建' }}
+          <a-button :loading="loading" @click="handleAdd" type="primary">{{ route.query.id ? '确定' : '创建' }}
           </a-button>
           <a-button :style="{
             background: '#f0f9eb',   // 鲜亮的草绿色
@@ -53,7 +54,7 @@
       </a-form-item>
     </a-form>
 
-    <a-modal v-model:open="openDesModel" title="对话框" @ok="handleOk">
+    <a-modal v-model:open="openDesModel" title="AI编辑描述" @ok="handleOk">
       <a-form>
         <a-form-item>
           <a-textarea v-model:value="reviewForm.description" placeholder="请输入图片描述，将图片中什么的修改为什么。描述你要修改的细节，越多越准确哟~"
@@ -93,6 +94,7 @@ import { usePublicStore } from '@/stores/publicStore.ts'
 import Cropper from '@/components/Cropper.vue'
 import { EditOutlined } from '@ant-design/icons-vue'
 import AIEditView from "./components/AIEditView.vue"
+import aiLoadingGif from '@/assets/Ai loading model.gif'
 
 const route = useRoute()
 const publicStore = usePublicStore()
@@ -118,7 +120,7 @@ let AIEditViewData = ref([{
   url: picture.value?.url
 }, {
   title: "AI编辑",
-  url: ""
+  url: aiLoadingGif
 }]) //AI编辑图片数据
 
 
@@ -155,23 +157,28 @@ async function handleAdd() {
   if (pictureForm.value.id) {
     const res = await editPictureUsingPost(pictureForm.value)
     if (res.data.code === 200) {
+      //判断是添加修改图片
       if (route.query.id) {
-        message.success('修改成功')
+        if (route.query.spaceId) {
+          message.success('修改成功')
+        }
+        else {
+          message.success('修改成功,等待管理员审核')
+        }
       } else {
-        let msg = userStore.user.userRole == 'user' ? '创建成功,等待管理员审核' : '创建成功'
-        message.success(msg)
+        if (route.query.spaceId) {
+          message.success('创建成功')
+        }
+        else {
+          message.success('创建成功,等待管理员审核')
+        }
         // 清空表单
         pictureForm.value = {}
         picture.value = {}
       }
       router.go(-1)
     } else {
-      if (route.query.id) {
-        message.error(res.data.message)
-      }
-      else {
-        message.error(res.data.message)
-      }
+      message.error(res.data.message)
     }
   }
 }
@@ -204,10 +211,8 @@ let key = ref("");//图片生成的key
 async function handleOk() {
   if (reviewForm.value.description?.trim() != '') {
     loading.value = true
-    AIEditViewData.value[0].url = picture.value?.url
-    AIEditViewData.value[1].url = "src/assets/Ai loading model.gif"
-    // AIEditViewData.value[1].url = "src/assets/Sandy Loading.gif"
-
+    AIEditViewData.value[0].url = picture.value?.previewUrl
+    AIEditViewData.value[1].url = aiLoadingGif
     const res = await aiEditPictureUsingPost(reviewForm.value)
     if (res.data.code === 200) {
       message.success('AI修改需要30秒左右,请耐心等待')
@@ -233,10 +238,11 @@ async function handleAIEditOk() {
   }
 
   loading.value = true;
+
   let res = await uploadPictureByUrlUsingPost(data);
   if (res.data.code == 200) {
     message.success("应用成功");
-    picture.value.url = res.data.data?.url;
+    onSuccess(res.data.data)
     loading.value = false;
     handleCancelAIEditModel();
   }
@@ -251,6 +257,10 @@ function handleCancelAIEditModel() {
   key.value = "";
   loading.value = false;
   clearInterval(timer);
+  reviewForm.value = {
+    id: undefined,
+    description: '',
+  }
 }
 
 let timer = null;

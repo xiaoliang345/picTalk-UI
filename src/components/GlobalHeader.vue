@@ -98,8 +98,8 @@ const originItems = ref<MenuProps['items']>([
       icon: "fluent-color:people-chat-20",
       width: 22
     }),
-    label: '论坛',
-    title: '论坛',
+    label: '社区',
+    title: '社区',
   },
   {
     key: '/admin/manage',

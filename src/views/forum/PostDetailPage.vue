@@ -199,19 +199,14 @@ async function fetchPost() {
 async function doLike() {
   if (!postId.value) return
   liking.value = true
-  try {
-    const res = await likePostUsingPost({ id: postId.value })
-    if (res.data?.code === 200 && res.data?.data) {
-      message.success('已点赞')
-      likeCount.value++;
-      await fetchPost()
-    } else {
-      message.error(res.data?.message || '点赞失败')
-    }
-  } catch (e) {
-    message.error('请求失败')
-  } finally {
-    liking.value = false
+  const originalLikeCount = likeCount.value;
+  const res = await likePostUsingPost({ id: postId.value })
+  if (res.data?.code === 200 && res.data?.data) {
+    message.success('已点赞')
+    likeCount.value++;
+  } else {
+    likeCount.value = originalLikeCount;
+    message.warning(res.data.message)
   }
 }
 
@@ -397,6 +392,7 @@ provide('fetchPost', fetchPost)
   gap: 6px;
   font-size: 14px;
   color: rgba(0, 0, 0, 0.65);
+  cursor: pointer;
 }
 
 .stat-count {

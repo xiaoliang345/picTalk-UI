@@ -90,6 +90,22 @@ export async function deletePostUsingPost(
   })
 }
 
+/** setTop POST /api/forum/post/top/${param0} */
+export async function setTopUsingPost(
+  // 叠加生成的Param类型 (非body参数swagger默认没有生成对象)
+  params: API.setTopUsingPOSTParams,
+  options?: { [key: string]: any }
+) {
+  const { postId: param0, ...queryParams } = params
+  return request<API.BaseResponseBoolean_>(`/api/forum/post/top/${param0}`, {
+    method: 'POST',
+    params: {
+      ...queryParams,
+    },
+    ...(options || {}),
+  })
+}
+
 /** updatePost POST /api/forum/post/update */
 export async function updatePostUsingPost(
   body: API.UpdatePostDTO,

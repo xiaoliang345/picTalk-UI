@@ -54,32 +54,43 @@ let type = ref(0) //0创建空间，1修改空间
 // 批量添加
 async function handleAddOrUpdate() {
   loading.value = true
-  let res = null
-  let mes = ''
-  if (type.value == 0) {
-    res = await addSpaceUsingPost(spaceForm.value)
-  } else {
-    res = await updateSpaceUsingPost({ ...spaceForm.value, id: route.query.id })
-  }
-  if (res.data.code === 200) {
+  try {
+    let res = null
+    let mes = ''
     if (type.value == 0) {
-      mes = '创建成功'
-      await userStore.listMyTeamSpace()
-      location.reload()
+      res = await addSpaceUsingPost(spaceForm.value)
+      mes = '创建'
     } else {
-      mes = '修改成功'
-      await router.push("/admin/spaceManage")
+      res = await updateSpaceUsingPost({ ...spaceForm.value, id: route.query.id })
+      mes = '修改'
     }
-    message.success(mes)
-  } else {
-    if (type.value == 0) {
-      mes = '创建失败'
+
+    if (res.data.code === 200) {
+      message.success(`${mes}成功`)
+      if (type.value == 0) {
+        if (props.spaceType == 'public') {
+          await userStore.listMyTeamSpace()
+          console.log(userStore.userSpacePublicList);
+
+          await router.push("/user/teamSpace?id=" + userStore.userSpacePublicList[0].spaceId)
+        }
+        else {
+          await userStore.getUserSpaceList()
+          await router.push("/user/mySpace")
+        }
+
+      } else {
+        // 修改成功后跳转到空间管理页面
+        await router.push("/admin/spaceManage")
+      }
     } else {
-      mes = '修改失败'
+      message.error(`${mes}失败: ${res.data.message}`)
     }
-    message.error(mes + res.data.message)
+  } catch (error) {
+    message.error(`操作失败: ${error.message}`)
+  } finally {
+    loading.value = false
   }
-  loading.value = false
 }
 
 // 根据空间id获取

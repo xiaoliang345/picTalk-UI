@@ -4,7 +4,10 @@
       <h2 class="title">PicTalk-用户注册</h2>
       <div class="desc">AI协同云库</div>
       <a-form :model="formState" name="basic" autocomplete="off" @finish="handleSubmit">
-        <a-form-item name="userAccount" :rules="[{ required: true, message: '请输入账号' }]">
+        <a-form-item name="userAccount" :rules="[
+          { required: true, message: '请输入账号' },
+          { pattern: /^[^\u4e00-\u9fa5]+$/, message: '账号不能包含中文' }
+        ]">
           <a-input v-model:value="formState.userAccount" placeholder="请输入账号" />
         </a-form-item>
 
@@ -26,18 +29,20 @@
         </div>
       </a-form>
     </div>
-    <video autoplay muted loop playsinline class="bg-video"
-      src="https://ys.mihoyo.com/main/_nuxt/videos/bg.3e78e80.mp4"></video>
+    <video v-if="!publicStore.isMobile" autoplay muted loop playsinline class="bg-video"
+      src="@/assets/bgYS.mp4"></video>
   </div>
 </template>
 <script lang="ts" setup>
 import { reactive } from 'vue'
 import { userRegisterUsingPost } from '@/api/userController.ts'
 import { useUserStore } from '@/stores/userStore.ts'
+import { usePublicStore } from '@/stores/publicStore.ts'
 import { message } from 'ant-design-vue'
 import router from '@/router'
 
 let userStore = useUserStore()
+const publicStore = usePublicStore();
 const formState = reactive<API.UserRegisterRequest>({
   userAccount: '',
   userPassword: '',

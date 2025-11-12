@@ -5,7 +5,7 @@
         <a-list-item>
           <a-card :title="item.title">
             <div style="text-align: center;">
-              <a-image :src="item.url" alt="" style="width: 80%;" :preview="!item.url.includes('Ai')" />
+              <a-image :src="item.url" alt="" style="max-height: 250px;" :preview="!item.url.includes('Ai')" />
             </div>
           </a-card>
         </a-list-item>

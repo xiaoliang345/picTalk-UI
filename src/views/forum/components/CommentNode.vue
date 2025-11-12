@@ -141,9 +141,6 @@ function addEmoji(emoji: string) {
   const before = inputValue.value.substring(0, start)
   const after = inputValue.value.substring(end)
   inputValue.value = before + emoji + after
-  console.log(before, after);
-
-  // console.log(inputValue.value);
 
   // 等待 DOM 更新后，恢复光标位置
   nextTick(() => {

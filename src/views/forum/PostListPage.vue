@@ -14,11 +14,9 @@
         </a-space>
       </div>
     </div>
-
-    <ForumPostList :records="records" :loading="loading" :total="total" :current="query.current"
-      :pageSize="query.pageSize" :interactive="true" :infinite="true" :hasMore="hasMore" @reachBottom="loadMore"
-      @itemClick="getPostDetail" @pageChange="fetchList" />
-
+    <ForumPostList ref="postListRef" :records="records" :loading="loading" :total="total" :current="query.current"
+      :pageSize="query.pageSize" :interactive="true" :infinite="true" :hasMore="hasMore"
+      @deletePostById="deletePostById" @reachBottom="loadMore" @itemClick="getPostDetail" @fetchList="fetchList" />
     <!-- 创建/编辑帖子弹窗 -->
     <PostEditor v-model:open="postEditorVisible" @success="handlePostEditorSuccess" />
   </div>
@@ -31,22 +29,20 @@ import { message } from 'ant-design-vue'
 import { EditOutlined } from '@ant-design/icons-vue'
 import { listPostsByPageUsingGet } from '@/api/forumController'
 import ForumPostList from './components/ForumPostList.vue'
-import { usePublicStore } from '@/stores/publicStore'
 import PostEditor from './components/PostEditor.vue'
 
 type PostItem = API.PostVO
 
 const router = useRouter()
-const publicStore = usePublicStore()
 
 const loading = ref<boolean>(false)
 const records = ref<PostItem[]>([])
 const total = ref<number>(0)
 const query = reactive<API.listPostsByPageUsingGETParams>({
   current: 1,
-  pageSize: 5,
-  sortField: 'createTime',
-  sortOrder: 'descend',
+  pageSize: 3,
+  // sortField: 'createTime',
+  // sortOrder: 'descend',
 })
 const hasMore = ref<boolean>(true)
 
@@ -65,14 +61,12 @@ function handlePostEditorSuccess() {
   fetchList(true)
 }
 
-function onPageChange(page: number, pageSize?: number) {
-  // 保留方法签名以兼容，但无限滚动不使用
+//本地删除帖子
+function deletePostById(postId: number) {
+  records.value = records.value.filter(item => item.id !== postId)
 }
 
-function reload() {
-  query.current = 1
-  fetchList(true)
-}
+
 
 async function fetchList(reset: boolean = false) {
   loading.value = true

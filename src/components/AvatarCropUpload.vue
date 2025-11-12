@@ -41,7 +41,7 @@ import { onMounted, reactive, ref, watch } from 'vue'
 import { VueCropper } from 'vue-cropper'
 import 'vue-cropper/dist/index.css'
 import { message } from 'ant-design-vue'
-import { uploadPictureUsingPost } from '@/api/pictureController.ts'
+import { uploadAvatarUsingPost, uploadPictureUsingPost } from '@/api/pictureController.ts'
 import { usePublicStore } from '@/stores/publicStore.ts'
 
 interface Props {
@@ -128,10 +128,8 @@ async function handleOk() {
       try {
         let params: Record<string, any> = props.picture ? { id: props.picture.id } : {}
         if (props.spaceId) params['spaceId'] = props.spaceId
-        const res: any = await uploadPictureUsingPost(params, {}, file)
+        const res: any = await uploadAvatarUsingPost({}, file)
         if (res.data.code === 200) {
-          console.log(res.data);
-
           message.success('上传成功')
           emit('onSuccess', res.data.data)
           visible.value = false

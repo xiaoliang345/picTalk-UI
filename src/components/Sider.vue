@@ -51,15 +51,20 @@ watch(
   },
   { immediate: true }
 )
-onMounted(async () => {
 
-  await userStore.listMyTeamSpace()
-  let obj = {
-    type: "group",
-    label: '我的团队',
-    title: '我的团队',
-    children: []
-  }
+let obj = reactive({
+  type: "group",
+  label: '我的团队',
+  title: '我的团队',
+  children: []
+})
+
+onMounted(() => {
+  items.value.push(obj)
+})
+
+watch(() => userStore.userSpacePublicList, () => {
+  obj.children = []
   userStore.userSpacePublicList?.forEach((item: API.SpaceUserVO) => {
     let child = {
       key: `/user/teamSpace?id=${item.spaceId}`,
@@ -68,8 +73,7 @@ onMounted(async () => {
     }
     obj.children.push(child)
   })
-  items.value.push(obj)
-})
+}, { deep: true, immediate: true })
 </script>
 <style scoped lang="less">
 .menu {

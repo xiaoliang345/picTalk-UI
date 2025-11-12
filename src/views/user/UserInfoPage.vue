@@ -80,20 +80,24 @@
               <PictureCardList :pictures="myPictures" @getPictureInfo="getPictureInfo" />
               <div ref="infiniteSentinel" class="infinite-sentinel"></div>
 
-              <a-modal v-model:open="previewOpen" width="70%" :footer="null" :closable="false">
-                <ImagePreview :picture="previewPicture" />
-              </a-modal>
             </div>
           </a-tab-pane>
 
           <a-tab-pane key="posts" tab="帖子">
-            <ForumPostList :records="postsRecords" :loading="postsLoading" :total="postsTotal"
-              :current="postsQuery.current" :pageSize="postsQuery.pageSize" :interactive="false" :infinite="true"
-              :hasMore="postsHasMore" @reachBottom="onReachBottomPosts" @itemClick="gotoPost"
-              @pageChange="fetchMyPosts" />
+            <ForumPostList ref="postListRef" :records="postsRecords" :loading="postsLoading" :total="postsTotal"
+              :current="postsQuery.current" :pageSize="postsQuery.pageSize" :interactive="true" :infinite="true"
+              :hasMore="postsHasMore" @deletePostById="deletePostById" @reachBottom="onReachBottomPosts"
+              @itemClick="gotoPost" @fetchList="fetchMyPosts" />
           </a-tab-pane>
         </a-tabs>
       </a-card>
+
+      <el-dialog v-model="previewOpen" :show-close="false" :width="publicStore.isMobile ? '80%' : '60%'"
+        style="border-radius: 8px;padding:0px">
+        <template #header="{ close, titleId, titleClass }">
+        </template>
+        <ImagePreview :picture="previewPicture" />
+      </el-dialog>
     </div>
   </div>
 </template>
@@ -120,10 +124,14 @@ import {
   CloseOutlined,
 } from '@ant-design/icons-vue'
 import dayjs from 'dayjs'
+import { usePublicStore } from '@/stores/publicStore'
 
+
+const postListRef = ref<InstanceType<typeof ForumPostList> | null>(null)
 const formRef = ref()
 const router = useRouter()
 const userStore = useUserStore()
+const publicStore = usePublicStore()
 const isEditing = ref(false)
 const submitLoading = ref(false)
 const activeTab = ref<'pictures' | 'posts'>('pictures')
@@ -165,8 +173,7 @@ const postsTotal = ref(0)
 const postsQuery = reactive<API.listPostsByPageUsingGETParams>({
   current: 1,
   pageSize: 3,
-  sortField: 'createTime',
-  sortOrder: 'descend',
+  userId: userStore.user.id,
 })
 const postsHasMore = ref(true)
 
@@ -189,12 +196,10 @@ function cancelEdit() {
 }
 
 // 上传头像
-function onSuccess(pic: API.PictureVO) {
-  console.log(pic);
-
-  userForm.userAvatar = pic.url
+function onSuccess(pic: string) {
+  userForm.userAvatar = pic
   handleSubmit()
-  picture.value = pic
+  picture.value.url = pic
 }
 
 // 提交表单
@@ -248,28 +253,26 @@ function gotoPost(postId: number) {
 
 // 触底加载更多
 function onReachBottomPosts() {
-  if (postsLoading.value) return
-  if (!postsHasMore.value) return
-  postsQuery.current = (postsQuery.current || 1) + 1
-  fetchMyPosts()
+  if (postsLoading.value || !postsHasMore.value) return
+  postsQuery.current += 1
+  fetchMyPosts(true) // isLoadMore = true
 }
 
-// 获取我的帖子（前端按 userId 过滤）
-async function fetchMyPosts() {
+// 获取我的帖子
+async function fetchMyPosts(isLoadMore = false) {
   postsLoading.value = true
   try {
     const res = await listPostsByPageUsingGet(postsQuery)
     if (res.data?.code === 200) {
-      const pageAll = res.data?.data?.records || []
-      const filtered = pageAll.filter((p) => (p as any).userId === userStore.user.id)
-      if ((postsQuery.current as number) === 1) {
-        postsRecords.value = filtered
+
+      const pageRecords = res.data?.data?.records || []
+      if (isLoadMore) {
+        postsRecords.value.push(...pageRecords)
       } else {
-        postsRecords.value = [...postsRecords.value, ...filtered]
+        postsRecords.value = pageRecords // 首次加载或刷新
       }
-      // 以是否还有下一页来判断，若本页接口仍返回数据则可能还有下一页
-      postsHasMore.value = pageAll.length > 0
-      postsTotal.value = (res.data?.data?.total as number) || 0
+      postsTotal.value = res.data?.data?.total || 0
+      postsHasMore.value = postsRecords.value.length < postsTotal.value
     } else {
       message.error(res.data?.message || '获取帖子失败')
     }
@@ -280,32 +283,11 @@ async function fetchMyPosts() {
   }
 }
 
-// 文本截断
-function truncateText(text?: string, maxLength: number = 120): string {
-  if (!text) return ''
-  return text.length > maxLength ? text.substring(0, maxLength) + '...' : text
+//本地删除帖子
+function deletePostById(postId: number) {
+  postsRecords.value = postsRecords.value.filter(item => item.id !== postId)
 }
 
-// 帖子时间格式
-function formatTimeTextForPost(time?: number[] | string): string {
-  if (!time) return '刚刚'
-  let date: Date
-  if (Array.isArray(time)) {
-    date = new Date(time[0], (time[1] as number) - 1, time[2] as number, (time[3] as number) || 0, (time[4] as number) || 0, (time[5] as number) || 0)
-  } else {
-    date = new Date(time)
-  }
-  const now = new Date()
-  const diff = now.getTime() - date.getTime()
-  const minute = 60 * 1000
-  const hour = 60 * minute
-  const day = 24 * hour
-  if (diff < minute) return '刚刚'
-  if (diff < hour) return `${Math.floor(diff / minute)}分钟前`
-  if (diff < day) return `${Math.floor(diff / hour)}小时前`
-  if (diff < 7 * day) return `${Math.floor(diff / day)}天前`
-  return `${date.getMonth() + 1}-${date.getDate()}`
-}
 
 
 onMounted(async () => {
@@ -321,7 +303,7 @@ onMounted(async () => {
   if (infiniteSentinel.value) {
     observer.observe(infiniteSentinel.value)
   }
-  // 首次进入帖子页时加载
+  // 首次进入帖子页时加载picture
   if (activeTab.value === 'posts') {
     fetchMyPosts()
   }
@@ -373,8 +355,11 @@ function formatTime(timestamp: number) {
 <style lang="less" scoped>
 #userInfoPage {
   min-height: 100vh;
-  // background: #f0f2f5;
-  // padding: 24px;
+
+
+  :deep(.el-dialog__header) {
+    padding: 0px
+  }
 
   .user-info-container {
     max-width: 800px;
@@ -382,6 +367,13 @@ function formatTime(timestamp: number) {
 
     :deep(.ant-card-body) {
       padding: 0px;
+
+
+    }
+
+
+    :deep(.ant-tabs-nav) {
+      margin: 0 !important;
     }
 
     .user-profile-card {
@@ -592,7 +584,7 @@ function formatTime(timestamp: number) {
     .my-uploads-card {
       border-radius: 12px;
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-      margin-top: 24px;
+      margin-top: 12px;
 
       :deep(.ant-card-head) {
         border-bottom: 1px solid #f0f0f0;
@@ -602,6 +594,8 @@ function formatTime(timestamp: number) {
           color: #1f1f1f;
         }
       }
+
+
     }
   }
 }

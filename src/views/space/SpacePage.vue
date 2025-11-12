@@ -66,7 +66,7 @@
         <PlusOutlined />
         添加图片
       </a-button>
-      <a-button v-if="role == 'admin' && space?.spaceType != 0" type="primary" ghost
+      <a-button v-if="showMemberManagementButton" type="primary" ghost
         @click="router.push(`/user/spaceUserManage?id=${space?.id}`)">
         <LineChartOutlined />
         成员管理
@@ -75,10 +75,10 @@
         <LineChartOutlined />
         空间分析
       </a-button>
-      <a-button @click="editPicture" v-if="userStore.showSpaceId != userStore.privateSpaceId">
+      <!--  <a-button @click="editPicture" v-if="userStore.showSpaceId != userStore.privateSpaceId">
         <EditOutlined />
         批量编辑
-      </a-button>
+      </a-button> -->
     </a-space>
 
     <!-- 图片列表 -->
@@ -89,7 +89,7 @@
       <template #header="{ close, titleId, titleClass }">
       </template>
       <!-- 图片详情详情 -->
-      <ImagePreview :picture="pictureInfo" />
+      <ImagePreview :picture="pictureInfo" @handleDeleteSuccess="handleDeleteSuccess" />
     </el-dialog>
 
     <pagination :page-size-options="pageSizeOptions" :total="total" @handlePageChange="handlePageChange"
@@ -133,6 +133,7 @@ let role = ref('') //当前用户在其团队空间的角色
 let modelOpen = ref(false);//图片详情弹窗
 let pictureInfo = ref<API.PictureVO>();//图片详情数据
 const showAdvanced = ref(false)
+const showMemberManagementButton = ref(false) // 控制成员管理按钮显示
 
 const searchForm = reactive<API.PictureQueryRequest>({
   current: 1,
@@ -230,10 +231,14 @@ async function getPictureBySpaceId() {
   const res = await listPictureVoByPageUsingPost(searchForm)
   if (res.data.code == 200) {
     pictures.value = res.data.data?.records ?? []
-    console.log(pictures.value);
-
     total.value = res.data.data?.total ?? 0
   }
+}
+
+// 图片删除成功
+function handleDeleteSuccess() {
+  modelOpen.value = false
+  getPictureBySpaceId()
 }
 
 // 初始化函数
@@ -292,6 +297,11 @@ watch(
   },
   { immediate: true },
 )
+
+// 监听role和space变化，控制成员管理按钮显示
+watch([() => role.value, () => space.value], ([newRole, newSpace]) => {
+  showMemberManagementButton.value = newRole === 'admin' && newSpace?.spaceType !== 0;
+}, { immediate: true })
 </script>
 <style scoped lang="less">
 #spacePage {

@@ -35,7 +35,7 @@
       :row-selection="{ selectedRowKeys: state.selectedRowKeys, onChange: onSelectChange, columnWidth: '60px' }">
       <template #bodyCell="{ column, record, index }">
         <template v-if="column.dataIndex === 'url'">
-          <a-image :width="80" :src="record.thumbnailUrl" />
+          <a-image :width="90" :src="record.thumbnailUrl" />
         </template>
         <template v-else-if="column.dataIndex === 'user'">
           {{ record.userId }}

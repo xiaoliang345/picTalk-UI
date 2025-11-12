@@ -25,6 +25,7 @@ onMounted(async () => {
   await userStore.getLoginUser()
   await publicStore.getTagAndCategory()
   await userStore.getUserSpaceList()
+  await userStore.listMyTeamSpace()
 })
 </script>
 <style scoped></style>

@@ -2,7 +2,7 @@
   <div id="avatar-uploader">
     <a-upload :disabled="loading" list-type="picture-card" :show-upload-list="false" :before-upload="beforeUpload"
       :custom-request="handleChange">
-      <img v-if="picture?.url" :src="picture?.url" alt="avatar" />
+      <img v-if="picture?.previewUrl" :src="picture?.previewUrl" alt="avatar" />
       <div v-else>
         <loading-outlined v-if="loading"></loading-outlined>
         <plus-outlined v-else></plus-outlined>

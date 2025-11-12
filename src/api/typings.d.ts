@@ -305,6 +305,7 @@ declare namespace API {
     pageSize?: number
     sortField?: string
     sortOrder?: string
+    userId?: number
   }
 
   type MapStringString_ = true
@@ -500,6 +501,7 @@ declare namespace API {
     createTime?: string
     id?: number
     imageUrls?: MapStringString_[]
+    isTop?: number
     likeCount?: number
     title?: string
     updateTime?: string
@@ -511,6 +513,13 @@ declare namespace API {
   type SearchPictureByColorRequest = {
     picColor?: string
     spaceId?: number
+  }
+
+  type setTopUsingPOSTParams = {
+    /** isTop */
+    isTop: number
+    /** postId */
+    postId: number
   }
 
   type Space = {

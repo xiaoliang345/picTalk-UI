@@ -274,7 +274,7 @@ export async function uploadAvatarUsingPost(
     }
   })
 
-  return request<API.BaseResponseBoolean_>('/api/picture/upload/avatar', {
+  return request<API.BaseResponseString_>('/api/picture/upload/avatar', {
     method: 'POST',
     data: formData,
     requestType: 'form',
