@@ -15,12 +15,12 @@
         <AddPictureBatch />
       </a-tab-pane>
     </a-tabs>
-    <div v-if="editPictureBtn" style="text-align: center; margin: 10px 0">
+    <!-- <div v-if="editPictureBtn" style="text-align: center; margin: 10px 0">
       <a-button @click="handleEditPicture">
         <EditOutlined />
         编辑图片
       </a-button>
-    </div>
+    </div> -->
 
     <a-form v-if="pictureForm.id" class="pictureForm" layout="inline" :model="pictureForm"
       :label-col="{ style: { width: '50px' } }">
@@ -71,7 +71,7 @@
       </template>
     </a-modal>
 
-    <cropper class="cropper" v-model:cropperIsShow="cropperIsShow" :picture="picture" :onSuccess="onSuccess" />
+    <!-- <cropper class="cropper" v-model:cropperIsShow="cropperIsShow" :picture="picture" :onSuccess="onSuccess" /> -->
   </div>
 </template>
 <script setup lang="ts">

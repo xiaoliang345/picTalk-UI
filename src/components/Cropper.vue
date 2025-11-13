@@ -80,6 +80,7 @@ watch(
 const fixed = ref(false)
 const mode = ref('contain') // 可选 contain, cover, 100%等
 let webSocket: PictureEditWebSocket | null
+let isRemoteOperation = false // 添加标志位，防止循环调用
 
 function handleCancel() {
   cropperIsShow.value = false
@@ -88,23 +89,41 @@ function handleCancel() {
 
 // 操作按钮方法
 const rotateLeft = () => {
-  cropperRef.value?.rotateLeft()
-  editAction(PICTURE_EDIT_ACTION_ENUM.ROTATE_LEFT)
+  if (!isRemoteOperation) {
+    cropperRef.value?.rotateLeft()
+    editAction(PICTURE_EDIT_ACTION_ENUM.ROTATE_LEFT)
+  } else {
+    cropperRef.value?.rotateLeft()
+  }
 }
 
 const rotateRight = () => {
-  cropperRef.value?.rotateRight()
-  editAction(PICTURE_EDIT_ACTION_ENUM.ROTATE_RIGHT)
+  if (!isRemoteOperation) {
+    cropperRef.value?.rotateRight()
+    editAction(PICTURE_EDIT_ACTION_ENUM.ROTATE_RIGHT)
+  } else {
+    cropperRef.value?.rotateRight()
+  }
 }
 
 const zoomIn = () => {
-  cropperRef.value?.changeScale(1)
-  editAction(PICTURE_EDIT_ACTION_ENUM.ZOOM_IN)
+  if (!isRemoteOperation) {
+    console.log("放大");
+
+    cropperRef.value?.changeScale(1)
+    editAction(PICTURE_EDIT_ACTION_ENUM.ZOOM_IN)
+  } else {
+    cropperRef.value?.changeScale(1)
+  }
 }
 
 const zoomOut = () => {
-  cropperRef.value?.changeScale(-1)
-  editAction(PICTURE_EDIT_ACTION_ENUM.ZOOM_OUT)
+  if (!isRemoteOperation) {
+    cropperRef.value?.changeScale(-1)
+    editAction(PICTURE_EDIT_ACTION_ENUM.ZOOM_OUT)
+  } else {
+    cropperRef.value?.changeScale(-1)
+  }
 }
 
 // 确认裁剪
@@ -205,6 +224,11 @@ function initWebSocket() {
   })
   webSocket.on(PICTURE_EDIT_MESSAGE_TYPE_ENUM.EDIT_ACTION, (res: any) => {
     message.info(res.message)
+    isRemoteOperation = true // 设置为远程操作
+    console.log("接收到操作");
+    console.log(res);
+
+
     switch (res.editAction) {
       case PICTURE_EDIT_ACTION_ENUM.ZOOM_IN:
         zoomIn()
@@ -219,6 +243,10 @@ function initWebSocket() {
         rotateRight()
         break
     }
+    // 使用 setTimeout 确保在下次操作前重置标志
+    setTimeout(() => {
+      isRemoteOperation = false
+    }, 0)
   })
   webSocket.on(PICTURE_EDIT_MESSAGE_TYPE_ENUM.EXIT_EDIT, (res: any) => {
     message.info(res.message)
@@ -282,14 +310,14 @@ onUnmounted(() => {
 
 @media (max-width: 768px) {
   .button-group {
-    flex-direction: column;
+    // flex-direction: column;
     align-items: center;
   }
 
   .action-btn,
   .confirm-btn {
     margin: 5px 0;
-    width: 100%;
+    // width: 100px;
   }
 }
 </style>

@@ -51,6 +51,8 @@ const handleSubmit = async (values: API.UserLoginRequest) => {
         publicStore.path = "/";
       }
     }
+    await userStore.getUserSpaceList()
+    await userStore.listMyTeamSpace()
     router.push({
       path: publicStore.path ? publicStore.path : "/",
       replace: true,
