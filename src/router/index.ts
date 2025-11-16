@@ -91,6 +91,11 @@ const router = createRouter({
           name: '帖子详情',
           component: () => import('@/views/forum/PostDetailPage.vue'),
         },
+        {
+          path: '/fs',
+          name: '文件共享',
+          component: () => import('@/views/fileShare/index.vue'),
+        },
       ],
     },
     {

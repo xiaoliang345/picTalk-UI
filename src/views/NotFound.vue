@@ -2,18 +2,18 @@
   <div id="not-found">
     <div class="not-found-container">
       <div class="not-found-content">
-        <h1>404 - Page Not Found</h1>
-        <p class="description">Oops! It seems like you've stumbled upon a mysterious sequence of numbers.</p>
+        <h1>404 - 页面未找到</h1>
+        <p class="description">哎呀！看起来您遇到了一个神秘的数字序列。</p>
 
         <div class="number-sequence-container">
-          <img src="../assets/404.png" alt="Number sequence" class="number-sequence" />
+          <img src="../assets/404.png" alt="数字序列" class="number-sequence" />
         </div>
 
-        <p class="subtext">We couldn't find the page you're looking for, but here's something interesting to ponder.</p>
+        <p class="subtext">我们找不到您要找的页面，但这里有一些有趣的东西可以思考。</p>
 
         <div class="actions">
-          <router-link to="/" class="home-button">Return Home</router-link>
-          <button @click="contactSupport" class="contact-button">Contact Support</button>
+          <router-link to="/" class="home-button">返回首页</router-link>
+          <button @click="contactSupport" class="contact-button">联系支持</button>
         </div>
       </div>
     </div>
@@ -45,13 +45,13 @@ const contactSupport = () => {
   align-items: center;
   min-height: 100vh;
   background-color: #f8f9fa;
-  padding: 20px;
+  /* padding: 20px; */
 }
 
 .not-found-content {
   max-width: 800px;
   text-align: center;
-  padding: 40px;
+  padding: 20px;
   background-color: white;
   border-radius: 10px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
@@ -70,6 +70,7 @@ h1 {
 }
 
 .number-sequence-container {
+  max-width: 500px;
   margin: 30px 0;
   overflow-x: auto;
   background-color: #f1f1f1;
@@ -96,7 +97,8 @@ h1 {
   flex-wrap: wrap;
 }
 
-.home-button, .contact-button {
+.home-button,
+.contact-button {
   padding: 12px 24px;
   border-radius: 5px;
   font-weight: 500;
@@ -143,7 +145,8 @@ h1 {
     align-items: center;
   }
 
-  .home-button, .contact-button {
+  .home-button,
+  .contact-button {
     width: 100%;
   }
 }

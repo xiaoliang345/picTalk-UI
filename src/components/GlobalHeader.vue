@@ -50,10 +50,8 @@
 <script lang="ts" setup>
 import { computed, h, ref, watch } from 'vue'
 import {
-  HomeOutlined,
   LoginOutlined,
   SmileOutlined,
-  PictureFilled,
   UsergroupAddOutlined,
   PictureOutlined,
   AppstoreOutlined,
@@ -117,8 +115,16 @@ const originItems = ref<MenuProps['items']>([
     key: '/admin/spaceManage',
     icon: () => h(AppstoreOutlined),
     label: '空间管理',
-
     title: '空间管理',
+  },
+  {
+    key: '/fs',
+    icon: () => h(Icon, {
+      icon: "material-icon-theme:folder-shared-open",
+      width: 22
+    }),
+    label: '文件共享',
+    title: '文件共享',
   }
 ])
 
