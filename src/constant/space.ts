@@ -1,0 +1,15 @@
+// 空间权限常量
+export const SPACE_PERMISSIONS = {
+  SPACE_USER_MANAGE: 'spaceUser:manage',
+  PICTURE_VIEW: 'picture:view',
+  PICTURE_UPLOAD: 'picture:upload',
+  PICTURE_EDIT: 'picture:edit',
+  PICTURE_DELETE: 'picture:delete',
+} as const
+
+// 单独导出，方便直接导入使用
+export const SPACE_USER_MANAGE = SPACE_PERMISSIONS.SPACE_USER_MANAGE
+export const PICTURE_VIEW = SPACE_PERMISSIONS.PICTURE_VIEW
+export const PICTURE_UPLOAD = SPACE_PERMISSIONS.PICTURE_UPLOAD
+export const PICTURE_EDIT = SPACE_PERMISSIONS.PICTURE_EDIT
+export const PICTURE_DELETE = SPACE_PERMISSIONS.PICTURE_DELETE

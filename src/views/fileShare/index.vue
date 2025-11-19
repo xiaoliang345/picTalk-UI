@@ -37,7 +37,7 @@
                   <i class="fas fa-cloud-upload-alt upload-icon"></i>
                 </div>
                 <p class="ant-upload-text">点击上传</p>
-                <p class="ant-upload-hint">最大支持 100MB</p>
+                <p class="ant-upload-hint">最大支持 50MB</p>
                 <p class="ant-upload-hint" style="color: orange">
                   多个文件请打包成 rar/zip 上传哟~
                 </p>
@@ -177,10 +177,13 @@ const fetchFileList = async () => {
 }
 
 const beforeUpload = (file) => {
-  const isLt100M = file.size / 1024 / 1024 < 100
-  if (!isLt100M) {
-    message.error('文件大小不能超过 100MB!')
+  const fileSize = file.size / 1024 / 1024
+  if (fileSize > 50) {
+    message.error('文件大小不能超过 50MB!')
     return false
+  }
+  if (fileSize >= 30) {
+    message.warning("文件较大,解析中~")
   }
   return true
 }

@@ -79,11 +79,12 @@
             <EditOutlined />
             编辑
           </a-button>
-          <a-button @click="handleDelete(record.id)" danger>
-            <DeleteFilled />
-            删除
-          </a-button>
-
+          <a-popconfirm title="是否确认删除?" ok-text="Yes" cancel-text="No" @confirm="handleDelete(record.id)">
+            <a-button danger type="link">
+              <DeleteFilled />
+              删除
+            </a-button>
+          </a-popconfirm>
         </template>
         <template v-else-if="column.dataIndex === 'createTime'">
           {{ dayjs(record.createTime).format('YYYY-MM-DD HH:mm:ss') }}

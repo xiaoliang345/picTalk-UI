@@ -3,7 +3,6 @@
 </template>
 <script lang="ts" setup>
 import { h, onMounted, reactive, ref, watch } from 'vue'
-import { MailOutlined, TeamOutlined, UserDeleteOutlined } from '@ant-design/icons-vue'
 import router from '@/router'
 import { useUserStore } from '@/stores/userStore.ts'
 import { usePublicStore } from '@/stores/publicStore.ts'

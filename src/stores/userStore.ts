@@ -21,8 +21,8 @@ export const useUserStore = defineStore('user', () => {
       const res = await listMyTeamSpaceUsingPost()
       if (res.data.code == 200) {
         userSpacePublicList.value =
-          res.data.data.filter((item) => {
-            if (item.space.spaceType == 1) return item
+          res?.data?.data.filter((item) => {
+            if (item.space?.spaceType == 1) return item
           }) || []
       }
     }

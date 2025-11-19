@@ -1,6 +1,6 @@
 <template>
   <AddSpace v-if="showType == 0" spaceType="private" />
-  <SpacePage v-else />
+  <SpacePage v-else :spaceType="0" :spaceId="userStore.privateSpaceId" />
 </template>
 <script setup lang="ts">
 import { ref, watch } from 'vue'

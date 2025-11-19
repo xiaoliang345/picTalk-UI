@@ -95,6 +95,7 @@ import Cropper from '@/components/Cropper.vue'
 import { EditOutlined } from '@ant-design/icons-vue'
 import AIEditView from "./components/AIEditView.vue"
 import aiLoadingGif from '@/assets/Ai loading model.gif'
+import { use } from "echarts/types/src/extension.js"
 
 const route = useRoute()
 const publicStore = usePublicStore()
@@ -163,14 +164,25 @@ async function handleAdd() {
           message.success('修改成功')
         }
         else {
-          message.success('修改成功,等待管理员审核')
+          if (userStore.user.userRole == 'admin') {
+            message.success('修改成功')
+          }
+          else {
+            message.success('修改成功,等待管理员审核')
+          }
         }
-      } else {
+      }
+      else {
         if (route.query.spaceId) {
           message.success('创建成功')
         }
         else {
-          message.success('创建成功,等待管理员审核')
+          if (userStore.user.userRole == 'admin') {
+            message.success('创建成功')
+          }
+          else {
+            message.success('创建成功,等待管理员审核')
+          }
         }
         // 清空表单
         pictureForm.value = {}

@@ -56,10 +56,12 @@
             <a-button @click="handleUpdate(record.id, record.userId)" type="link">
               编辑
             </a-button>
-            <a-button @click="handleDelete(record.id)" danger type="link">
-              <DeleteFilled />
-              删除
-            </a-button>
+            <a-popconfirm title="是否确认删除?" ok-text="Yes" cancel-text="No" @confirm="handleDelete(record.id)">
+              <a-button danger type="link">
+                <DeleteFilled />
+                删除
+              </a-button>
+            </a-popconfirm>
           </a-space>
         </template>
       </template>

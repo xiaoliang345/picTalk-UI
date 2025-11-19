@@ -1,21 +1,28 @@
 <template>
   <div id="spacePage">
     <h2 class="title">
-      {{ space?.spaceName }}{{ space?.spaceType == 0 ? '（个人空间）' : '（团队' + '空间）' }}
-      <a-tooltip>
-        <template #title>占用空间：{{
-          (((space?.totalSize ?? 0) / 1024 / 1024).toFixed(1)) +
-          'MB /' +
-          (((space?.maxSize ?? 0) / 1024 / 1024).toFixed(1)) +
-          'MB'
-        }}
+      <div style="display: flex; align-items: center;">
+        {{ space?.spaceName }}{{ space?.spaceType == 0 ? '（个人空间）' : '（团队' + '空间）' }}
+        <a-tooltip>
+          <template #title>占用空间：{{
+            (((space?.totalSize ?? 0) / 1024 / 1024).toFixed(1)) +
+            'MB /' +
+            (((space?.maxSize ?? 0) / 1024 / 1024).toFixed(1)) +
+            'MB'
+          }}
+          </template>
+          <a-progress type="circle" :size="40" :stroke-color="{
+            '0%': '#108ee9',
+            '100%': '#87d068',
+          }" :percent="percent">
+          </a-progress>
+        </a-tooltip>
+      </div>
+      <a-button shape="circle" @click="handleRefresh">
+        <template #icon>
+          <ReloadOutlined />
         </template>
-        <a-progress type="circle" :size="40" :stroke-color="{
-          '0%': '#108ee9',
-          '100%': '#87d068',
-        }" :percent="percent">
-        </a-progress>
-      </a-tooltip>
+      </a-button>
     </h2>
     <!-- 搜索表单（优化版） -->
     <div class="search-card">
@@ -61,17 +68,19 @@
     </div>
 
     <!--    按钮区域-->
-    <a-space class="button-area" v-if="role != 'viewer'">
-      <a-button type="primary" @click="addPictureToSpace">
+    <a-space class="button-area">
+      <a-button type="primary" @click="addPictureToSpace"
+        v-if="permissionList.includes(SPACE_PERMISSIONS.PICTURE_UPLOAD)">
         <PlusOutlined />
         添加图片
       </a-button>
-      <a-button v-if="showMemberManagementButton" type="primary" ghost
-        @click="router.push(`/user/spaceUserManage?id=${space?.id}`)">
+      <a-button type="primary" ghost @click="router.push(`/user/spaceUserManage?id=${space?.id}`)"
+        v-if="permissionList.includes(SPACE_PERMISSIONS.SPACE_USER_MANAGE)">
         <LineChartOutlined />
         成员管理
       </a-button>
-      <a-button type="primary" ghost @click="router.push('/user/spaceAnalyse')">
+      <a-button type="primary" ghost @click="router.push('/user/spaceAnalyse')"
+        v-if="permissionList.includes(SPACE_PERMISSIONS.PICTURE_VIEW)">
         <LineChartOutlined />
         空间分析
       </a-button>
@@ -101,7 +110,7 @@
 import { ColorPicker } from 'vue3-colorpicker'
 import 'vue3-colorpicker/style.css'
 import { useUserStore } from '@/stores/userStore.ts'
-import { PlusOutlined, EditOutlined, LineChartOutlined } from '@ant-design/icons-vue'
+import { PlusOutlined, ReloadOutlined, LineChartOutlined } from '@ant-design/icons-vue'
 import { useRouter } from 'vue-router'
 import { reactive, ref, watch } from 'vue'
 import {
@@ -115,6 +124,10 @@ import EditPictureBatch from '@/views/space/components/EditPictureBatch.vue'
 import { useRoute } from 'vue-router'
 import ImagePreview from '../picture/components/ImageInfo.vue'
 import PictureCardList from '../picture/components/PictureCardList.vue'
+import { SPACE_PERMISSIONS } from '@/constant/space.ts'
+
+let emits = defineEmits(['refresh'])
+let props = defineProps(["spaceType", "spaceId"])
 
 const router = useRouter()
 const route = useRoute()
@@ -129,7 +142,8 @@ let tagMap = ref(publicStore.tagMap) //标签选项
 let categoryMap = ref(publicStore.categoryMap) //分类选项
 let pureColor = ref('black') //按颜色搜索颜色
 let percent = ref(0) //占用空间百分比
-let role = ref('') //当前用户在其团队空间的角色
+let spaceRole = ref('') //当前用户在其团队空间的角色
+let permissionList = ref<string[]>([])//当前用户在空间内的权限
 let modelOpen = ref(false);//图片详情弹窗
 let pictureInfo = ref<API.PictureVO>();//图片详情数据
 const showAdvanced = ref(false)
@@ -220,6 +234,9 @@ async function getSpaceById() {
   const res = await getSpaceVoByIdUsingGet({ id: userStore.showSpaceId })
   if (res.data.code == 200) {
     space.value = res.data.data ?? {}
+    permissionList.value = (space.value?.permissionList as string[]) || []
+    console.log(permissionList.value);
+
     const total = space.value?.totalSize ?? 0
     const max = space.value?.maxSize ?? 1
     percent.value = Number(((total / max) * 100).toFixed(1))
@@ -263,6 +280,11 @@ async function init(flag?: string) {
   await getPictureBySpaceId()
 }
 
+function handleRefresh() {
+  //重新加载组件
+  emits('refresh');
+}
+
 // 监听颜色选择
 watch(
   () => pureColor.value,
@@ -279,28 +301,10 @@ watch(
   },
 )
 
-watch(
-  () => route.query?.id,
-  async (newValue) => {
-    await init()
-    if (route.query.id) {
-      if (userStore.userSpacePublicList.length > 0) {
-        role.value = userStore.userSpacePublicList.find(
-          (item: any) => item.spaceId == userStore.showSpaceId,
-        )?.spaceRole
-      }
-    } else {
-      role.value = 'admin' //个人空间默认为管理员
-    }
-    console.log("role=" + role.value)
-
-  },
-  { immediate: true },
-)
-
 // 监听role和space变化，控制成员管理按钮显示
-watch([() => role.value, () => space.value], ([newRole, newSpace]) => {
-  showMemberManagementButton.value = newRole === 'admin' && newSpace?.spaceType !== 0;
+watch(() => props.spaceId, async () => {
+  console.log(props);
+  await init()
 }, { immediate: true })
 </script>
 <style scoped lang="less">
@@ -320,6 +324,7 @@ watch([() => role.value, () => space.value], ([newRole, newSpace]) => {
     display: flex;
     align-items: center;
     margin-bottom: 20px;
+    justify-content: space-between;
   }
 
   .search {

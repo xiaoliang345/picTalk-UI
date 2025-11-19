@@ -22,13 +22,13 @@
                 <ShareAltOutlined />
               </template>
             </a-button>
-            <a-button @click="handleUpdate">
+            <a-button v-if="permissionList.includes(SPACE_PERMISSIONS.PICTURE_EDIT)" @click="handleUpdate">
               <template #icon>
                 <EditFilled />
               </template>
 
             </a-button>
-            <a-button @click="handleDelete">
+            <a-button v-if="permissionList.includes(SPACE_PERMISSIONS.PICTURE_DELETE)" @click="handleDelete">
               <template #icon>
                 <DeleteFilled />
               </template>
@@ -80,13 +80,13 @@
 import { TAG_COLOR_MAP } from '@/constant/index.ts'
 import { DownloadOutlined, DeleteFilled, EditFilled, ShareAltOutlined } from '@ant-design/icons-vue'
 // 获取图片信息
-import { deletePictureUsingPost } from '@/api/pictureController.ts'
+import { deletePictureUsingPost, getPictureVoByIdUsingGet } from '@/api/pictureController.ts'
 import router from '@/router'
 import { message } from 'ant-design-vue'
 import { downloadImage } from '@/utils'
-import { useUserStore } from '@/stores/userStore.ts'
 import Share from '@/components/Share.vue'
 import { ref, watch } from 'vue'
+import { SPACE_PERMISSIONS } from "@/constant/space.ts"
 
 const props = defineProps({
   picture: {
@@ -98,6 +98,7 @@ const props = defineProps({
 const emit = defineEmits(['handleDeleteSuccess'])
 
 const picture = ref<API.PictureVO>(props.picture)
+const permissionList = ref<string[]>([])//权限列表
 const shareLink = ref('') //二维码链接
 let shareIsShow = ref(false) //是否显示二维码
 
@@ -121,6 +122,18 @@ async function handleDelete() {
   }
 }
 
+//根据id获取图片
+async function getPictureById(id: number) {
+  const res = await getPictureVoByIdUsingGet({ id: id })
+  if (res.data.code == 200) {
+    picture.value = res.data.data
+    permissionList.value = picture.value?.permissionList
+    console.log(permissionList);
+
+  }
+}
+
+
 // 编辑
 function handleUpdate() {
   router.push({
@@ -137,8 +150,8 @@ const doDownload = () => {
   downloadImage(picture.value?.url)
 }
 
-watch(() => props.picture, (newValue) => {
-  picture.value = newValue
+watch(() => props.picture, async (newValue) => {
+  await getPictureById(newValue.id)
 }, { immediate: true })
 
 </script>
