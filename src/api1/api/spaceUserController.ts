@@ -6,7 +6,7 @@ import request from '@/request'
 export async function acceptInviteUsingPost(
   // 叠加生成的Param类型 (非body参数swagger默认没有生成对象)
   params: API.acceptInviteUsingPOSTParams,
-  options?: { [key: string]: any },
+  options?: { [key: string]: any }
 ) {
   const { inviteCode: param0, ...queryParams } = params
   return request<API.BaseResponseBoolean_>(`/api/spaceUser/acceptInvite/${param0}`, {
@@ -19,7 +19,7 @@ export async function acceptInviteUsingPost(
 /** addSpaceUser POST /api/spaceUser/add */
 export async function addSpaceUserUsingPost(
   body: API.SpaceUserAddRequest,
-  options?: { [key: string]: any },
+  options?: { [key: string]: any }
 ) {
   return request<API.BaseResponseLong_>('/api/spaceUser/add', {
     method: 'POST',
@@ -34,7 +34,7 @@ export async function addSpaceUserUsingPost(
 /** deleteSpaceUser POST /api/spaceUser/delete */
 export async function deleteSpaceUserUsingPost(
   body: API.DeleteRequest,
-  options?: { [key: string]: any },
+  options?: { [key: string]: any }
 ) {
   return request<API.BaseResponseBoolean_>('/api/spaceUser/delete', {
     method: 'POST',
@@ -49,7 +49,7 @@ export async function deleteSpaceUserUsingPost(
 /** editSpaceUser POST /api/spaceUser/edit */
 export async function editSpaceUserUsingPost(
   body: API.SpaceUserEditRequest,
-  options?: { [key: string]: any },
+  options?: { [key: string]: any }
 ) {
   return request<API.BaseResponseBoolean_>('/api/spaceUser/edit', {
     method: 'POST',
@@ -64,7 +64,7 @@ export async function editSpaceUserUsingPost(
 /** getSpaceUser POST /api/spaceUser/get */
 export async function getSpaceUserUsingPost(
   body: API.SpaceUserQueryRequest,
-  options?: { [key: string]: any },
+  options?: { [key: string]: any }
 ) {
   return request<API.BaseResponseSpaceUser_>('/api/spaceUser/get', {
     method: 'POST',
@@ -80,7 +80,7 @@ export async function getSpaceUserUsingPost(
 export async function getInviteInfoUsingPost(
   // 叠加生成的Param类型 (非body参数swagger默认没有生成对象)
   params: API.getInviteInfoUsingPOSTParams,
-  options?: { [key: string]: any },
+  options?: { [key: string]: any }
 ) {
   const { inviteCode: param0, ...queryParams } = params
   return request<API.BaseResponseIniteInfoVO_>(`/api/spaceUser/inviteInfo/${param0}`, {
@@ -94,7 +94,7 @@ export async function getInviteInfoUsingPost(
 export async function createIniteLinkUsingPost(
   // 叠加生成的Param类型 (非body参数swagger默认没有生成对象)
   params: API.createIniteLinkUsingPOSTParams,
-  options?: { [key: string]: any },
+  options?: { [key: string]: any }
 ) {
   const { spaceId: param0, ...queryParams } = params
   return request<API.BaseResponseString_>(`/api/spaceUser/link/${param0}`, {
@@ -107,7 +107,7 @@ export async function createIniteLinkUsingPost(
 /** listSpaceUser POST /api/spaceUser/list */
 export async function listSpaceUserUsingPost(
   body: API.SpaceUserQueryRequest,
-  options?: { [key: string]: any },
+  options?: { [key: string]: any }
 ) {
   return request<API.BaseResponseListSpaceUserVO_>('/api/spaceUser/list', {
     method: 'POST',

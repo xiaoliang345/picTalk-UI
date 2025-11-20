@@ -4,11 +4,13 @@
       <!-- 左侧：图片区域 -->
       <a-col :xs="24" :sm="24" :md="14" :lg="14" :xl="14" class="image-wrapper">
         <div class="image-container">
-          <a-image lazy :src="picture?.previewUrl" class="preview-img">
-            <template #placeholder>
-              <a-image :src="picture?.previewUrl" :preview="false" />
-            </template>
-          </a-image>
+          <a-spin :spinning="loading">
+            <a-image v-if="picture?.previewUrl" lazy :src="picture?.previewUrl" class="preview-img">
+              <template #placeholder>
+                <a-image :src="picture?.previewUrl" :preview="false" />
+              </template>
+            </a-image>
+          </a-spin>
         </div>
         <div class="btns">
           <a-space>
@@ -39,37 +41,39 @@
 
       <!-- 右侧：信息面板 -->
       <a-col :xs="24" :sm="24" :md="10" :lg="10" :xl="10" class="info-panel">
-        <div>
-          <div class="panel-header">
-            <div class="avatar">
-              <a-avatar shape="circle" :src="picture?.user?.userAvatar" />
+        <a-spin :spinning="loading">
+          <div>
+            <div class="panel-header">
+              <div class="avatar">
+                <a-avatar shape="circle" :src="picture?.user?.userAvatar" />
+              </div>
+              <div class="info">
+                <div class="title">{{ picture.name }}</div>
+                <div class="time">{{ new Date(picture.createTime).toLocaleString() }}</div>
+              </div>
             </div>
-            <div class="info">
-              <div class="title">{{ picture.name }}</div>
-              <div class="time">{{ new Date(picture.createTime).toLocaleString() }}</div>
+            <a-divider width="90%" />
+            <div class="prompt-section">
+              <h4>图片介绍</h4>
+              <div class="introduction">
+                {{ picture.introduction != null ? picture.introduction : "暂无图片介绍" }}
+              </div>
             </div>
           </div>
-          <a-divider width="90%" />
-          <div class="prompt-section">
-            <h4>图片介绍</h4>
-            <div class="introduction">
-              {{ picture.introduction != null ? picture.introduction : "暂无图片介绍" }}
-            </div>
-          </div>
-        </div>
 
-        <div class="meta-info">
-          <div class="category">
-            <a-tag v-if="picture?.category">{{ picture?.category }}</a-tag>
-            <a-tag>{{ (picture?.picSize / 1024 / 1024).toFixed(1) }}MB</a-tag>
-            <a-tag>{{ picture?.picFormat }}</a-tag>
+          <div class="meta-info">
+            <div class="category">
+              <a-tag v-if="picture?.category">{{ picture?.category }}</a-tag>
+              <a-tag>{{ (picture?.picSize / 1024 / 1024).toFixed(1) }}MB</a-tag>
+              <a-tag>{{ picture?.picFormat }}</a-tag>
 
+            </div>
+            <div class="tags" v-if="picture?.tags?.length > 0">
+              <a-tag v-for="tag in picture.tags" :bordered="false" :color="TAG_COLOR_MAP[tag]">{{
+                tag }}</a-tag>
+            </div>
           </div>
-          <div class="tags" v-if="picture?.tags?.length > 0">
-            <a-tag v-for="tag in picture.tags" :bordered="false" :color="TAG_COLOR_MAP[tag]">{{
-              tag }}</a-tag>
-          </div>
-        </div>
+        </a-spin>
       </a-col>
     </a-row>
     <share v-model:shareIsShow="shareIsShow" :shareLink="shareLink" />
@@ -101,7 +105,7 @@ const picture = ref<API.PictureVO>(props.picture)
 const permissionList = ref<string[]>([])//权限列表
 const shareLink = ref('') //二维码链接
 let shareIsShow = ref(false) //是否显示二维码
-
+const loading = ref(false) // 加载状态
 
 // 分享
 function handleShare(id: number) {
@@ -124,12 +128,16 @@ async function handleDelete() {
 
 //根据id获取图片
 async function getPictureById(id: number) {
-  const res = await getPictureVoByIdUsingGet({ id: id })
-  if (res.data.code == 200) {
-    picture.value = res.data.data
-    permissionList.value = picture.value?.permissionList
-    console.log(permissionList);
-
+  loading.value = true
+  try {
+    const res = await getPictureVoByIdUsingGet({ id: id })
+    if (res.data.code == 200) {
+      picture.value = res.data.data
+      permissionList.value = picture.value?.permissionList
+      console.log(permissionList);
+    }
+  } finally {
+    loading.value = false
   }
 }
 
@@ -151,7 +159,11 @@ const doDownload = () => {
 }
 
 watch(() => props.picture, async (newValue) => {
-  await getPictureById(newValue.id)
+  if (newValue && newValue.id) {
+    // 在加载新图片前重置当前图片数据，避免显示旧图片
+    picture.value = {} as API.PictureVO
+    await getPictureById(newValue.id)
+  }
 }, { immediate: true })
 
 </script>

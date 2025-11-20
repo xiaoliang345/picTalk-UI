@@ -4,7 +4,7 @@
   </div>
 </template>
 <script setup lang="ts">
-import { onMounted, ref } from "vue";
+import { onMounted, ref, watch } from "vue";
 import SpacePage from "./SpacePage.vue"
 import { useRoute } from "vue-router";
 
@@ -16,5 +16,9 @@ function handleRefresh() {
   console.log("father");
   refreshKey.value = refreshKey.value + 1
 }
+
+watch(() => route.query.id, () => {
+  spaceId.value = route.query.id
+})
 </script>
 <style scoped lang="less"></style>

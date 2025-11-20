@@ -75,7 +75,7 @@
         添加图片
       </a-button>
       <a-button type="primary" ghost @click="router.push(`/user/spaceUserManage?id=${space?.id}`)"
-        v-if="permissionList.includes(SPACE_PERMISSIONS.SPACE_USER_MANAGE)">
+        v-if="permissionList.includes(SPACE_PERMISSIONS.SPACE_USER_MANAGE) && space?.spaceType == 1">
         <LineChartOutlined />
         成员管理
       </a-button>
@@ -235,7 +235,6 @@ async function getSpaceById() {
   if (res.data.code == 200) {
     space.value = res.data.data ?? {}
     permissionList.value = (space.value?.permissionList as string[]) || []
-    console.log(permissionList.value);
 
     const total = space.value?.totalSize ?? 0
     const max = space.value?.maxSize ?? 1
@@ -303,7 +302,6 @@ watch(
 
 // 监听role和space变化，控制成员管理按钮显示
 watch(() => props.spaceId, async () => {
-  console.log(props);
   await init()
 }, { immediate: true })
 </script>

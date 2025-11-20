@@ -12,7 +12,7 @@ export default defineConfig({
   plugins: [
     vue(),
     vueDevTools(),
-    // ...
+    // createHtmlPlugin({}),
     Components({
       resolvers: [ElementPlusResolver()],
     }),
@@ -28,3 +28,6 @@ export default defineConfig({
     },
   },
 })
+function createHtmlPlugin(arg0: {}): import('vite').PluginOption {
+  throw new Error('Function not implemented.')
+}

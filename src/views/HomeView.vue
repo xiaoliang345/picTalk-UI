@@ -39,7 +39,7 @@
     <PictureCardList :pictures="data" @getPictureInfo="getPictureInfo" />
 
     <el-dialog v-model="modelOpen" :show-close="false" :width="publicStore.isMobile ? '80%' : '60%'"
-      style="border-radius: 8px;padding:0px">
+      style="border-radius: 8px;padding:0px" @close="handleImagePreviewClose">
       <template #header="{ close, titleId, titleClass }">
       </template>
       <ImagePreview :picture="pictureInfo" @handleDeleteSuccess="handleDeleteSuccess" />
@@ -83,7 +83,7 @@ const searchForm = reactive<API.PictureQueryRequest>({
 
 // 获取图片详情
 function getPictureInfo(item: API.PictureVO) {
-  pictureInfo.value = item;
+  pictureInfo.value = { ...item }; // 创建副本避免引用问题
   modelOpen.value = true;
 }
 // 搜索
@@ -95,6 +95,12 @@ async function handleSearch() {
 watch([() => searchForm.category, () => searchForm.tags], () => {
   handleSearch()
 })
+
+//关闭图片预览
+function handleImagePreviewClose() {
+  modelOpen.value = false;
+  pictureInfo.value = {}
+}
 
 // 标签选中
 const handleSelect = (index: number) => {

@@ -29,9 +29,11 @@ import { onBeforeMount, reactive } from 'vue'
 import { userLoginUsingPost } from '@/api/userController.ts'
 import { useUserStore } from '@/stores/userStore.ts'
 import { message } from 'ant-design-vue'
-import router from '@/router'
 import { usePublicStore } from '@/stores/publicStore.ts'
+import { useRoute } from 'vue-router'
+import router from '@/router'
 
+const route = useRoute()
 const userStore = useUserStore();
 const publicStore = usePublicStore();
 const formState = reactive<API.UserLoginRequest>({
@@ -53,10 +55,28 @@ const handleSubmit = async (values: API.UserLoginRequest) => {
     }
     await userStore.getUserSpaceList()
     await userStore.listMyTeamSpace()
-    router.push({
-      path: publicStore.path ? publicStore.path : "/",
-      replace: true,
-    })
+    
+    // 检查是否有重定向路径（例如邀请链接）
+    const redirect = route.query.redirect as string;
+    if (redirect) {
+      const query: Record<string, string> = {};
+      // 将所有查询参数传递给重定向地址
+      Object.keys(route.query).forEach(key => {
+        if (key !== 'redirect' && route.query[key]) {
+          query[key] = route.query[key] as string;
+        }
+      });
+      
+      router.push({
+        path: redirect,
+        query: query
+      });
+    } else {
+      router.push({
+        path: publicStore.path ? publicStore.path : "/",
+        replace: true,
+      });
+    }
   }
   else {
     message.error("登录失败" + res.data.message);

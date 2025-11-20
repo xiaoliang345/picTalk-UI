@@ -95,7 +95,6 @@ import Cropper from '@/components/Cropper.vue'
 import { EditOutlined } from '@ant-design/icons-vue'
 import AIEditView from "./components/AIEditView.vue"
 import aiLoadingGif from '@/assets/Ai loading model.gif'
-import { use } from "echarts/types/src/extension.js"
 
 const route = useRoute()
 const publicStore = usePublicStore()

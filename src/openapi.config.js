@@ -5,5 +5,5 @@ generateService({
   // schemaPath: 'http://localhost:8123/api/v2/api-docs?group="默认分组"',
   schemaPath: 'http://localhost:8123/api/v2/api-docs',
 
-  serversPath: './src',
+  serversPath: './src/api1',
 })

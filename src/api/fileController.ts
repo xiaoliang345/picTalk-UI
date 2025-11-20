@@ -1,13 +1,13 @@
 // @ts-ignore
 /* eslint-disable */
-import request from '@/request'
+import { uploadRequest } from '@/request'
 
 /** getDownloadUrl POST /api/files/download-url */
 export async function getDownloadUrlUsingPost(
   body: API.UploadVO,
   options?: { [key: string]: any },
 ) {
-  return request<string>('/api/files/download-url', {
+  return uploadRequest<string>('/api/files/download-url', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -26,7 +26,7 @@ export async function listFilesUsingGet(
   const { code: param0, ...queryParams } = params
   console.log(param0)
 
-  return request<string[]>(`/api/files/list/${param0}`, {
+  return uploadRequest<string[]>(`/api/files/list/${param0}`, {
     method: 'GET',
     params: { ...queryParams },
     ...(options || {}),
@@ -57,7 +57,7 @@ export async function uploadFileUsingPost(body: {}, file?: File, options?: { [ke
     }
   })
 
-  return request<API.UploadVO>('/api/files/upload', {
+  return uploadRequest<API.UploadVO>('/api/files/upload', {
     method: 'POST',
     data: formData,
     requestType: 'form',
@@ -72,7 +72,7 @@ export async function getUploadProgressUsingGet(
   options?: { [key: string]: any },
 ) {
   const { authCode: param0, ...queryParams } = params
-  return request<Record<string, any>>(`/api/files/upload/progress/${param0}`, {
+  return uploadRequest<Record<string, any>>(`/api/files/upload/progress/${param0}`, {
     method: 'GET',
     params: { ...queryParams },
     ...(options || {}),

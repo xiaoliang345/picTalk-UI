@@ -179,7 +179,7 @@ const fetchFileList = async () => {
 const beforeUpload = (file) => {
   const fileSize = file.size / 1024 / 1024
   if (fileSize > 50) {
-    message.error('文件大小不能超过 50MB!')
+    message.error('文件大小不能超过50MB!')
     return false
   }
   if (fileSize >= 30) {

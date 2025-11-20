@@ -96,6 +96,11 @@ const router = createRouter({
           name: '文件共享',
           component: () => import('@/views/fileShare/index.vue'),
         },
+        {
+          path: '/space/invite',
+          name: '空间邀请确认',
+          component: () => import('@/views/space/SpaceInviteConfirm.vue'),
+        },
       ],
     },
     {
@@ -116,14 +121,44 @@ const router = createRouter({
   ],
 })
 
-/*router.beforeEach(async (to, from, next) => {
-  //TODO前置路由守卫中访问Pinia中的数据
+router.beforeEach(async (to, from, next) => {
+  // 如果访问的是邀请确认页面，检查用户是否已登录
+  if (to.path === '/space/invite') {
+    const userStore = useUserStore()
+    await userStore.getLoginUser()
+
+    // 如果用户未登录，重定向到登录页面，并保存邀请链接参数
+    if (!userStore.user || userStore.user.userName === '未登录') {
+      // 构建查询参数对象，包含所有当前路由的查询参数
+      const query: Record<string, string> = {
+        redirect: '/space/invite',
+      }
+
+      // 保存所有查询参数
+      Object.keys(to.query).forEach((key) => {
+        if (to.query[key]) {
+          query[key] = to.query[key] as string
+        }
+      })
+
+      next({
+        path: '/user/login',
+        query: query,
+      })
+      return
+    }
+  }
+
+  // TODO前置路由守卫中访问Pinia中的数据
   const userStore = useUserStore()
   if (to.path.includes('admin') && userStore.user.userRole != 'admin') {
     next('/')
     return
   }
-})*/
+
+  next()
+})
+
 router.afterEach((to) => {
   const publicStore = usePublicStore()
   if (publicStore.isMobile) {

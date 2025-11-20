@@ -54,11 +54,11 @@ const beforeUpload = (file: UploadProps['fileList'][number]) => {
   if (!isJpgOrPng) {
     message.error('You can only upload JPG | PNG | GIF file!')
   }
-  const isLt2M = file.size / 1024 / 1024 < 2
-  if (!isLt2M) {
-    message.error('Image must smaller than 2MB!')
+  const isLt3M = file.size / 1024 / 1024 <= 3
+  if (!isLt3M) {
+    message.error('Image must smaller than 3MB!')
   }
-  return isJpgOrPng && isLt2M
+  return isJpgOrPng && isLt3M
 }
 </script>
 <style scoped>
