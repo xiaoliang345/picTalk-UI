@@ -2,6 +2,21 @@
 /* eslint-disable */
 import request from '@/request'
 
+/** AiCreatePicture POST /api/picture/ai/create */
+export async function aiCreatePictureUsingPost(
+  body: API.PictureCreateByAIRequest,
+  options?: { [key: string]: any }
+) {
+  return request<API.BaseResponseString_>('/api/picture/ai/create', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: body,
+    ...(options || {}),
+  })
+}
+
 /** AiEditPicture POST /api/picture/ai/edit */
 export async function aiEditPictureUsingPost(
   body: API.PictureUpdateByAIRequest,

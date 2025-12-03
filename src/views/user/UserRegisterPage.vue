@@ -2,7 +2,7 @@
   <div id="userRegisterPage">
     <div class="registerForm">
       <h2 class="title">PicTalk-用户注册</h2>
-      <div class="desc">AI协同云库</div>
+      <div class="desc">让好图，触手可及</div>
       <a-form :model="formState" name="basic" autocomplete="off" @finish="handleSubmit">
         <a-form-item name="userAccount" :rules="[
           { required: true, message: '请输入账号' },

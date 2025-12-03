@@ -445,6 +445,10 @@ declare namespace API {
     userId?: number
   }
 
+  type PictureCreateByAIRequest = {
+    description?: string
+  }
+
   type PictureEditByBatchRequest = {
     category?: string
     nameRule?: string

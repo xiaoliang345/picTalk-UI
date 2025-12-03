@@ -2,7 +2,7 @@
   <div id="userLoginPage">
     <div class="loginForm">
       <h2 class="title">PicTalk-用户登录</h2>
-      <div class="desc">AI协同云库</div>
+      <div class="desc">让好图，触手可及</div>
       <a-form :model="formState" name="basic" autocomplete="off" @finish="handleSubmit">
         <a-form-item name="userAccount" :rules="[{ required: true, message: '请输入账号' }]">
           <a-input v-model:value="formState.userAccount" placeholder="请输入账号" />
@@ -55,7 +55,7 @@ const handleSubmit = async (values: API.UserLoginRequest) => {
     }
     await userStore.getUserSpaceList()
     await userStore.listMyTeamSpace()
-    
+
     // 检查是否有重定向路径（例如邀请链接）
     const redirect = route.query.redirect as string;
     if (redirect) {
@@ -66,7 +66,7 @@ const handleSubmit = async (values: API.UserLoginRequest) => {
           query[key] = route.query[key] as string;
         }
       });
-      
+
       router.push({
         path: redirect,
         query: query

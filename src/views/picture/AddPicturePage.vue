@@ -11,17 +11,16 @@
       <a-tab-pane key="url" tab="地址上传">
         <PictureUploadByUrl :picture="picture" :onSuccess="onSuccess" />
       </a-tab-pane>
-      <a-tab-pane v-if="showAddPictures" key="more" tab="批量创建">
-        <AddPictureBatch />
+      <a-tab-pane key="ai">
+        <template #tab>
+          <div style="display: flex;align-items: center;">
+            <AppIcon icon="fluent-emoji-flat:robot" :width="22"></AppIcon>
+            <span style="margin-left: 5px;">AI创建</span>
+          </div>
+        </template>
+        <PictureUploadByAI :picture="picture" :onSuccess="onSuccess" />
       </a-tab-pane>
     </a-tabs>
-    <!-- <div v-if="editPictureBtn" style="text-align: center; margin: 10px 0">
-      <a-button @click="handleEditPicture">
-        <EditOutlined />
-        编辑图片
-      </a-button>
-    </div> -->
-
     <a-form v-if="pictureForm.id" class="pictureForm" layout="inline" :model="pictureForm"
       :label-col="{ style: { width: '50px' } }">
       <a-form-item label="名称">
@@ -75,6 +74,7 @@
   </div>
 </template>
 <script setup lang="ts">
+import { AppleOutlined, AndroidOutlined } from '@ant-design/icons-vue';
 import PictureUpload from "./components/PictureUpload.vue"
 import { onMounted, ref, computed } from 'vue'
 import {
@@ -87,12 +87,10 @@ import {
 import { message } from 'ant-design-vue'
 import { useRoute } from 'vue-router'
 import PictureUploadByUrl from "./components/PictureUploadByUrl.vue"
-import AddPictureBatch from './components/AddPictureBatch.vue'
+import PictureUploadByAI from "./components/PictureUploadByAI.vue"
 import { useUserStore } from '@/stores/userStore.ts'
 import router from '@/router'
 import { usePublicStore } from '@/stores/publicStore.ts'
-import Cropper from '@/components/Cropper.vue'
-import { EditOutlined } from '@ant-design/icons-vue'
 import AIEditView from "./components/AIEditView.vue"
 import aiLoadingGif from '@/assets/Ai loading model.gif'
 
@@ -237,6 +235,7 @@ async function handleOk() {
     }
   } else {
     message.error('请输入图片描述')
+    loading.value = false
   }
 }
 
@@ -288,7 +287,6 @@ function startPolling() {
     else if (res.data.code === 501) {
       message.error(res.data.message)
       clearInterval(timer)
-      clearInterval(timer)
     }
   }, 1000)
   //四十秒后停止轮询
@@ -321,7 +319,7 @@ onMounted(() => {
 <style scoped lang="less">
 #addPicture {
   .pictureForm {
-    margin: 20px auto;
+    margin: 15px auto;
     width: 500px;
   }
 
