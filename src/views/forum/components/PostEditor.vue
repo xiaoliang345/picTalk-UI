@@ -3,11 +3,13 @@
     @ok="handleSubmit" :confirmLoading="submitting" okText="保存" cancelText="取消" @cancel="handleCancel">
     <a-form :model="formData" layout="vertical">
       <a-form-item label="标题" required>
-        <a-input v-model:value="formData.title" placeholder="请输入帖子标题" :maxlength="100" show-count />
+        <a-input ref="titleInputRef" @focus="() => { addEmojiPlace = 'title' }" v-model:value="formData.title"
+          placeholder="请输入帖子标题" :maxlength="100" show-count />
       </a-form-item>
       <a-form-item label="内容" required>
-        <a-textarea ref="contentTextareaRef" v-model:value="formData.content" :rows="isEditMode ? 4 : 5"
-          placeholder="分享你的想法..." :maxlength="5000" show-count />
+        <a-textarea ref="contentTextareaRef" @focus="() => { addEmojiPlace = 'content' }"
+          v-model:value="formData.content" :rows="isEditMode ? 4 : 5" placeholder="分享你的想法..." :maxlength="5000"
+          show-count />
         <div style="margin-top:5px">
           <EmojiPicker v-model:open="emojiPickerVisible" placement="bottomLeft" @select="addEmoji" />
         </div>
@@ -56,6 +58,8 @@ const visible = ref(false)
 const submitting = ref(false)
 const emojiPickerVisible = ref(false)
 const contentTextareaRef = ref<any>(null)
+const titleInputRef = ref<any>(null)
+const addEmojiPlace = ref("content")
 
 // 统一的表单数据
 const formData = ref({
@@ -102,31 +106,44 @@ watch(visible, (newVal) => {
   emit('update:open', newVal)
 })
 
-// 添加 emoji
+// 添加 emoji 到指定位置
 function addEmoji(emoji: string) {
-  const textarea = contentTextareaRef.value?.resizableTextArea?.textArea
-  if (!textarea) return
-
+  let e;
+  if (addEmojiPlace.value == 'title') {
+    e = titleInputRef.value?.$el.querySelector('input')
+  }
+  else {
+    e = contentTextareaRef.value?.resizableTextArea?.textArea
+  }
+  if (!e) return
   // 获取当前光标位置
-  const start = textarea.selectionStart
-  const end = textarea.selectionEnd
+  const start = e.selectionStart
+  const end = e.selectionEnd
 
-  // 插入 emoji 到光标位置
-  const before = formData.value.content.substring(0, start)
-  const after = formData.value.content.substring(end)
-  formData.value.content = before + emoji + after
-
+  if (addEmojiPlace.value == 'title') {
+    // 插入 emoji 到标题
+    const before = formData.value.title.substring(0, start)
+    const after = formData.value.title.substring(end)
+    formData.value.title = before + emoji + after
+  } else {
+    // 插入 emoji 到内容
+    const before = formData.value.content.substring(0, start)
+    const after = formData.value.content.substring(end)
+    formData.value.content = before + emoji + after
+  }
   // 等待 DOM 更新后，恢复光标位置
   nextTick(() => {
     const newCursorPos = start + emoji.length
-    textarea.setSelectionRange(newCursorPos, newCursorPos)
-    textarea.focus()
+    e.setSelectionRange(newCursorPos, newCursorPos)
+    e.focus()
   })
-
   emojiPickerVisible.value = false
 }
 
-
+// 处理图片上传成功
+function handleSuccess(pictures: API.PictureVO[]) {
+  console.log('所有图片:', pictures)
+}
 
 // 提交表单
 async function handleSubmit() {

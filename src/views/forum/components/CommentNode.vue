@@ -134,8 +134,6 @@ function addEmoji(emoji: string) {
   const pos = getCursorPosition();
   if (!pos) return;
   const { start, end, inputEl } = pos;
-  console.log(start, end);
-  console.log(inputValue.value);
 
   // 插入 emoji 到光标位置
   const before = inputValue.value.substring(0, start)

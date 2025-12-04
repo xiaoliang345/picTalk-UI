@@ -9,7 +9,7 @@ const PROD_BASE_URL = 'http://www.oxncloud.top'
 
 // 创建普通请求 Axios 实例 (5秒超时)
 const request = axios.create({
-  baseURL: PROD_BASE_URL,
+  baseURL: DEV_BASE_URL,
   timeout: 7000,
   withCredentials: true,
 })
