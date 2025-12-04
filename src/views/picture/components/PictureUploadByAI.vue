@@ -7,7 +7,7 @@
       </a-form-item>
     </a-form>
     <div style="margin: 20px 0 0;" v-if="pictureUrl">
-      <a-image :src="pictureUrl" style="max-height: 250px;" :preview="false" :placeholder="true">
+      <a-image :src="pictureUrl" style="max-height: 250px;" :preview="false">
       </a-image>
     </div>
     <a-space style="margin: 10px 0;float: left;" v-if="btnShow">
@@ -55,7 +55,6 @@ async function handleApply() {
   loading.value = true
   const res = await uploadPictureByUrlUsingPost({ fileUrl: pictureUrl.value })
   if (res.data.code === 200) {
-    message.success('上传成功')
     props.onSuccess?.(res.data.data)
     btnShow.value = false
   } else {

@@ -9,14 +9,14 @@ const PROD_BASE_URL = 'http://www.oxncloud.top'
 
 // 创建普通请求 Axios 实例 (5秒超时)
 const request = axios.create({
-  baseURL: DEV_BASE_URL,
+  baseURL: PROD_BASE_URL,
   timeout: 7000,
   withCredentials: true,
 })
 
 // 创建文件上传请求 Axios 实例 (15秒超时)
 const uploadRequest = axios.create({
-  baseURL: DEV_BASE_URL,
+  baseURL: PROD_BASE_URL,
   timeout: 15000,
   withCredentials: true,
 })
