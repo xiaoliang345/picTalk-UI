@@ -83,7 +83,8 @@ const handleChange = async ({ file }: any) => {
       loading.value = false
       pictureMaps.value.push({
         "url": res.data.data.url,
-        "thumbnailUrl": res.data.data.thumbnailUrl
+        "thumbnailUrl": res.data.data.thumbnailUrl,
+        "previewUrl": res.data.data.previewUrl
       })
 
     } else {

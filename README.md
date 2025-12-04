@@ -1,6 +1,6 @@
 # PicTalk 图片管理系统
 
-PicTalk 是一个基于 Vue 3 + TypeScript 的图片管理系统，支持图片存储、分享、协作编辑等功能。
+PicTalk 是一个基于 Vue 3 + TypeScript 的图片管理系统，支持图片存储、分享、编辑等功能。
 
 ## 功能特性
 
@@ -8,10 +8,10 @@ PicTalk 是一个基于 Vue 3 + TypeScript 的图片管理系统，支持图片�
 - 图片上传与管理
 - 团队空间与个人空间管理
 - 图片在线编辑（裁剪、缩放、旋转）
-- 多人实时协作编辑
 - 图片分类与标签管理
 - 社区论坛功能
 - 数据统计与分析
+- 空间成员邀请
 
 ## 技术栈
 
@@ -22,7 +22,6 @@ PicTalk 是一个基于 Vue 3 + TypeScript 的图片管理系统，支持图片�
 - Element Plus
 - Vue Router
 - Pinia (状态管理)
-- WebSocket (实时协作)
 
 ## 项目结构
 

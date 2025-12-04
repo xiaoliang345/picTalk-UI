@@ -18,7 +18,7 @@
             <span style="margin-left: 5px;">AI创建</span>
           </div>
         </template>
-        <PictureUploadByAI :picture="picture" :onSuccess="onSuccess" />
+        <PictureUploadByAI :onSuccess="onSuccess" />
       </a-tab-pane>
     </a-tabs>
     <a-form v-if="pictureForm.id" class="pictureForm" layout="inline" :model="pictureForm"
@@ -74,7 +74,6 @@
   </div>
 </template>
 <script setup lang="ts">
-import { AppleOutlined, AndroidOutlined } from '@ant-design/icons-vue';
 import PictureUpload from "./components/PictureUpload.vue"
 import { onMounted, ref, computed } from 'vue'
 import {

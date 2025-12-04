@@ -52,7 +52,7 @@
         <a-space wrap style="margin-top: 10px;">
           <div class="post-image-item" v-for="(url, idx) in (postVO.imageUrls as any)" :key="idx"
             style="position: relative;">
-            <a-image :src="url.thumbnailUrl" style="border-radius: 8px; object-fit: cover;" />
+            <a-image :src="url.previewUrl" style="border-radius: 8px; object-fit: cover;" />
             <a-button @click="doDownload(url.url)" class="download-btn">
               <template #icon>
                 <DownloadOutlined color="red" />

@@ -39,7 +39,7 @@
                 <p class="ant-upload-text">点击上传</p>
                 <p class="ant-upload-hint">最大支持 50MB</p>
                 <p class="ant-upload-hint" style="color: orange">
-                  多个文件请打包成 rar/zip 上传哟~
+                  多个文件请打包成 zip 上传哟~
                 </p>
               </a-upload>
             </a-spin>
