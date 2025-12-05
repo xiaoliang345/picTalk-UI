@@ -11,7 +11,7 @@
       <a-tab-pane key="url" tab="地址上传">
         <PictureUploadByUrl :picture="picture" :onSuccess="onSuccess" />
       </a-tab-pane>
-      <a-tab-pane key="ai">
+      <a-tab-pane key="ai" v-if="aiCreateTabShow">
         <template #tab>
           <div style="display: flex;align-items: center;">
             <AppIcon icon="fluent-emoji-flat:robot" :width="22"></AppIcon>
@@ -75,7 +75,7 @@
 </template>
 <script setup lang="ts">
 import PictureUpload from "./components/PictureUpload.vue"
-import { onMounted, ref, computed } from 'vue'
+import { onMounted, ref, computed, watch } from 'vue'
 import {
   aiEditPictureUsingPost,
   editPictureUsingPost,
@@ -103,11 +103,11 @@ let pictureForm = ref<API.PictureUpdateRequest>({
 let tagMap = ref(publicStore.tagMap) //标签选项
 let categoryMap = ref(publicStore.categoryMap) //分类选项
 let addType = ref('file')
-let showAddPictures = ref(true) //是否展示批量上传
 let cropperIsShow = ref(false) //控制croper是否显示
 let loading = ref(false) //加载状态
 let openDesModel = ref(false) //AI图片描述对话框
 let openAIEditModel = ref(false) //AI编辑图片对话框
+let aiCreateTabShow = ref(false);//AI创建图片Tab
 let reviewForm = ref<API.PictureUpdateByAIRequest>({
   id: undefined,
   description: '',
@@ -126,21 +126,17 @@ onMounted(() => {
   if (route.query.id) {
     getPictureData()
   }
-  if (route.query.spaceId) {
-    showAddPictures.value = false
+})
+
+//监听空间id
+watch(() => route.query.spaceId, (newValue) => {
+  if (newValue) {
+    aiCreateTabShow.value = true
   }
-})
-
-
-//是否显示编辑图片按钮
-let editPictureBtn = computed(() => {
-  return pictureForm.value.id && route.query.spaceId && route.query.spaceId != userStore.privateSpaceId;
-})
-
-//编辑图片
-function handleEditPicture() {
-  cropperIsShow.value = true
-}
+  else {
+    aiCreateTabShow.value = false
+  }
+}, { immediate: true })
 
 // 上传成功回调函数
 function onSuccess(value: any) {
@@ -296,21 +292,11 @@ function startPolling() {
 
 
 
-
 onMounted(() => {
   if (route.query.addType) addType.value = route.query.addType ?? 'file'
   if (route.query.id) {
     getPictureData();
     reviewForm.value.id = route.query.id;
-  }
-  if (route.query.spaceId) {
-    showAddPictures.value = false;
-  }
-  else if (userStore.user.userRole == 'user') {
-    showAddPictures.value = false;
-  }
-  else if (userStore.user.userRole == 'admin') {
-    showAddPictures.value = true;
   }
 })
 
