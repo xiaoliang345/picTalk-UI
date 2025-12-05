@@ -70,7 +70,6 @@
       </template>
     </a-modal>
 
-    <!-- <cropper class="cropper" v-model:cropperIsShow="cropperIsShow" :picture="picture" :onSuccess="onSuccess" /> -->
   </div>
 </template>
 <script setup lang="ts">

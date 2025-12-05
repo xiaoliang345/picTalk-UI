@@ -6,8 +6,8 @@
           placeholder="生成图片描述，例如：像素艺术风格，1:1 比例；白色小猫戴红色围巾，站在夜晚屋顶仰望满月；背景为像素化城市夜景，有烟囱和星星。" :autoSize="true"></a-textarea>
       </a-form-item>
     </a-form>
-    <div style="margin: 20px 0 0;" v-if="pictureUrl">
-      <a-image :src="pictureUrl" style="max-height: 250px;" :preview="false">
+    <div style="margin: 20px 0 0;" v-if="pictureUploadRequest.fileUrl">
+      <a-image :src="pictureUploadRequest.fileUrl" style="max-height: 250px;" :preview="false">
       </a-image>
     </div>
     <a-space style="margin: 10px 0;float: left;" v-if="btnShow">
@@ -18,23 +18,28 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, onMounted, onUnmounted, watch } from 'vue'
 import { message } from 'ant-design-vue'
 import { aiCreatePictureUsingPost, getAiPictureStatusUsingGet, uploadPictureByUrlUsingPost } from '@/api/pictureController.ts'
 import aiLoadingGif from '@/assets/Ai loading model.gif'
+import { useRoute } from 'vue-router'
 
 interface Props {
   onSuccess?: (picture: API.PictureVO) => void
 }
 
 const props = defineProps<Props>()
+const route = useRoute()
 const loading = ref<boolean>(false) //加载状态
 const applyBtnShow = ref<boolean>(false)
 const btnShow = ref<boolean>(true)
 const formData = ref<API.PictureCreateByAIRequest>({})
-const pictureUrl = ref<string>("")
 let taskId = ref(""); //图片生成的key
-
+const pictureUploadRequest = ref<API.uploadPictureUsingPOST1Params>({
+  id: undefined,
+  fileUrl: undefined,
+  spaceId: undefined,
+})
 
 async function handleCreate() {
   loading.value = true
@@ -42,7 +47,7 @@ async function handleCreate() {
   if (res.data.code === 200) {
     message.success('AI图片创建中')
     taskId.value = res.data.data
-    pictureUrl.value = aiLoadingGif
+    pictureUploadRequest.value.fileUrl = aiLoadingGif
     startPolling()
   } else {
     message.error('图片上传失败' + res.data.message)
@@ -53,7 +58,7 @@ async function handleCreate() {
 //确定
 async function handleApply() {
   loading.value = true
-  const res = await uploadPictureByUrlUsingPost({ fileUrl: pictureUrl.value })
+  const res = await uploadPictureByUrlUsingPost(pictureUploadRequest.value)
   if (res.data.code === 200) {
     props.onSuccess?.(res.data.data)
     btnShow.value = false
@@ -71,8 +76,7 @@ function startPolling() {
   timer = setInterval(async () => {
     const res = await getAiPictureStatusUsingGet({ taskId: taskId.value })
     if (res.data.code === 200 && res.data.data?.resultUrl) {
-      pictureUrl.value = res.data.data.resultUrl
-      message.success("AI创建完成")
+      pictureUploadRequest.value.fileUrl = res.data.data.resultUrl
       applyBtnShow.value = true;
       clearInterval(timer)
       loading.value = false;
@@ -90,7 +94,14 @@ function startPolling() {
   }, 40000)
 }
 
-
+watch([() => route?.query.spaceId, () => route?.query.id], (newValue) => {
+  if (newValue[0]) {
+    pictureUploadRequest.value.spaceId = newValue[0]
+  }
+  if (newValue[1]) {
+    pictureUploadRequest.value.spaceId = newValue[1]
+  }
+}, { immediate: true })
 </script>
 <style scoped>
 #avatar-uploader-url {

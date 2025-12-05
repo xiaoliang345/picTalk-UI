@@ -223,7 +223,6 @@ let reviewForm = ref({
 
 // 选中行变化
 const onSelectChange = (selectedRowKeys: Key[]) => {
-  console.log('selectedRowKeys changed: ', selectedRowKeys);
   state.selectedRowKeys = selectedRowKeys;
 };
 // 批量删除图片

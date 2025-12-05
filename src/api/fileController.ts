@@ -24,7 +24,6 @@ export async function listFilesUsingGet(
   options?: { [key: string]: any },
 ) {
   const { code: param0, ...queryParams } = params
-  console.log(param0)
 
   return uploadRequest<string[]>(`/api/files/list/${param0}`, {
     method: 'GET',

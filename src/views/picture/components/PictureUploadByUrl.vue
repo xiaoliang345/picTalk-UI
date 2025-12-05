@@ -2,7 +2,7 @@
   <div id="avatar-uploader-url">
     <a-form layout="inline" style="flex-direction: row;">
       <a-form-item class="inputUrl">
-        <a-input v-model:value="imgUrl" placeholder="请输入图片链接" />
+        <a-input v-model:value="pictureUploadRequest.fileUrl" placeholder="请输入图片链接" />
       </a-form-item>
       <a-form-item>
         <a-button type="primary" @click="handleChange" :loading="loading">上传</a-button>
@@ -14,26 +14,31 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import { message } from 'ant-design-vue'
 import { uploadPictureByUrlUsingPost } from '@/api/pictureController.ts'
+import { useRoute } from 'vue-router'
 
 interface Props {
   picture?: API.PictureVO
   onSuccess?: (picture: API.PictureVO) => void
 }
 
+const route = useRoute()
 const props = defineProps<Props>()
 const loading = ref<boolean>(false) //加载状态
-let imgUrl = ref('') //地址上传
+
+const pictureUploadRequest = ref<API.uploadPictureUsingPOST1Params>({
+  id: undefined,
+  fileUrl: undefined,
+  spaceId: undefined,
+})
 
 async function handleChange() {
   loading.value = true
   try {
-    let params = props.picture
-      ? { id: props.picture.id, fileUrl: imgUrl.value }
-      : { fileUrl: imgUrl.value }
-    const res = await uploadPictureByUrlUsingPost(params)
+
+    const res = await uploadPictureByUrlUsingPost(pictureUploadRequest.value)
     if (res.data.code === 200) {
       message.success('上传成功')
       props.onSuccess?.(res.data.data)
@@ -45,6 +50,15 @@ async function handleChange() {
   }
   loading.value = false
 }
+
+watch([() => route?.query.spaceId, () => route?.query.id], (newValue) => {
+  if (newValue[0]) {
+    pictureUploadRequest.value.spaceId = newValue[0]
+  }
+  if (newValue[1]) {
+    pictureUploadRequest.value.spaceId = newValue[1]
+  }
+}, { immediate: true })
 </script>
 <style scoped>
 #avatar-uploader-url {

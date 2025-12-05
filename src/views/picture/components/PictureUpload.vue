@@ -12,11 +12,12 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import { PlusOutlined, LoadingOutlined } from '@ant-design/icons-vue'
 import { message } from 'ant-design-vue'
 import type { UploadProps } from 'ant-design-vue'
 import { uploadPictureUsingPost } from '@/api/pictureController.ts'
+import { useRoute, useRouter } from 'vue-router'
 
 interface Props {
   spaceId?: number
@@ -24,17 +25,20 @@ interface Props {
   onSuccess?: (picture: API.PictureVO) => void
 }
 
+const route = useRoute()
 const loading = defineModel('loading')
-
 const props = defineProps<Props>()
+
+const pictureUploadRequest = ref<API.uploadPictureUsingPOST1Params>({
+  id: undefined,
+  fileUrl: undefined,
+  spaceId: undefined,
+})
 
 async function handleChange({ file }: any) {
   loading.value = true
-
   try {
-    let params = props.picture ? { id: props.picture.id } : {}
-    if (props.spaceId) params['spaceId'] = props.spaceId
-    const res = await uploadPictureUsingPost(params, {}, file)
+    const res = await uploadPictureUsingPost(pictureUploadRequest.value, {}, file)
     if (res.data.code === 200) {
       message.success('上传成功')
       props.onSuccess?.(res.data.data)
@@ -60,6 +64,15 @@ const beforeUpload = (file: UploadProps['fileList'][number]) => {
   }
   return isJpgOrPng && isLt3M
 }
+
+watch([() => route?.query.spaceId, () => route?.query.id], (newValue) => {
+  if (newValue[0]) {
+    pictureUploadRequest.value.spaceId = newValue[0]
+  }
+  if (newValue[1]) {
+    pictureUploadRequest.value.id = newValue[1]
+  }
+}, { immediate: true })
 </script>
 <style scoped>
 #avatar-uploader {

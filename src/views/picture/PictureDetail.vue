@@ -18,8 +18,6 @@ async function getPictureData() {
   const res = await getPictureVoByIdUsingGet({ id: route.query.id })
   if (res.data.code === 200) {
     picture.value = res.data.data
-    console.log(picture.value);
-
   }
 }
 

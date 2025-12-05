@@ -140,10 +140,7 @@ function addEmoji(emoji: string) {
   emojiPickerVisible.value = false
 }
 
-// 处理图片上传成功
-function handleSuccess(pictures: API.PictureVO[]) {
-  console.log('所有图片:', pictures)
-}
+
 
 // 提交表单
 async function handleSubmit() {

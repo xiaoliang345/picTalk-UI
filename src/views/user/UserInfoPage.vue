@@ -220,7 +220,6 @@ async function handleSubmit() {
       message.error('修改失败: ' + res.data.message)
     }
   } catch (error) {
-    console.log('Validation error:', error)
   } finally {
     submitLoading.value = false
   }
